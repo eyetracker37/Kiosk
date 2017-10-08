@@ -2,13 +2,23 @@ from ctypes import *
 
 dll = CDLL('DLL\QuickLink2.dll')
 
+error_list = ['OK', 'Invalid Device ID', 'Invalid Settings ID', 'Invalid Calibration ID', 'Invalid Target ID',
+              'Invalid Password', 'Invalid Path', 'Invalid Duration', 'Invalid Pointer', 'Timeout Elapsed',
+              'Internal Error', 'Buffer Too Small', 'Calibration Not Initialized', 'Device Not Started',
+              'Device Not Supported', 'Settings Not Found', 'UNAUTHORIZED', 'Invalid Group']
+
+
+def __display_error(code):
+    if code is not 0:
+        print(error_list[code])
+
 
 def get_version():
     func = dll.QLAPI_GetVersion
     buffer_size = 32
     func.argtypes = [c_int, c_char_p]
     output = create_string_buffer(buffer_size)
-    func(c_int(buffer_size), output)
+    __display_error(func(c_int(buffer_size), output))
     return output.value.decode('UTF-8')
 
 
@@ -25,6 +35,26 @@ def device_enumerate():
     for i in range(0, number):
         device_list.append(device_buffer[i])
     return device_list
+
+
+def get_status(identifier):
+    func = dll.QLDevice_GetStatus
+    device_id = c_int(identifier)
+    device_status = c_int()
+    device_status_pointer = pointer(device_status)
+    __display_error(func(device_id, device_status_pointer))
+    return device_status.value
+
+
+def start(identifier):
+    func = dll.QLDevice_Start
+    device_id = c_int(identifier)
+    __display_error(func(device_id))
+
+
+def stop_all():
+    func = dll.QLDevice_Stop_All
+    __display_error(func())
 
 
 class QLXYPairFloat(Structure):
@@ -98,5 +128,5 @@ def get_frame(identifier):
     func = dll.QLDevice_GetFrame
     device_or_group = c_int(identifier)
     frame = FrameData()
-    print(func(device_or_group, c_int(1000), frame))
-    print(frame.DeviceID)
+    __display_error(func(device_or_group, c_int(1000), byref(frame)))
+    print("Device ID is " + str(frame.DeviceID))
