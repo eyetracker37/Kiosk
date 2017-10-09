@@ -1,4 +1,5 @@
 from ctypes import *
+from logger import log
 
 dll = CDLL('DLL\QuickLink2.dll')
 
@@ -10,13 +11,12 @@ error_list = ['OK', 'Invalid Device ID', 'Invalid Settings ID', 'Invalid Calibra
 
 def __display_error(code):
     if code is not 0:
-        print(error_list[code])
+        log(error_list[code], 0)
 
 
 def get_version():
     func = dll.QLAPI_GetVersion
     buffer_size = 32
-    func.argtypes = [c_int, c_char_p]
     output = create_string_buffer(buffer_size)
     __display_error(func(c_int(buffer_size), output))
     return output.value.decode('UTF-8')
@@ -72,7 +72,8 @@ class QLEyeData(Structure):
         ("Pupil", QLXYPairFloat),
         ("Glint0", QLXYPairFloat),
         ("Glint1", QLXYPairFloat),
-        ("GazePoint", QLXYPairFloat)
+        ("GazePoint", QLXYPairFloat),
+        ("Reserved", (c_voidp * 16))
         # Reserved 16 possibly needed here
     ]
 
@@ -83,7 +84,8 @@ class QLWeightedGazePoint(Structure):
         ("x", c_float),
         ("y", c_float),
         ("LeftWeight", c_float),
-        ("RightWeight", c_float)
+        ("RightWeight", c_float),
+        ("Reserved", (c_voidp * 16))
         # Reserved 16 possibly needed here
     ]
 
@@ -106,7 +108,8 @@ class QLImageData(Structure):
         ("Gain", c_int),
         ("FrameNumber", c_long),
         ("ROI", QLRectInt),
-        ("ScaleFactor", c_float)
+        ("ScaleFactor", c_float),
+        ("Reserved", (c_voidp * 13))
     ]
 
 
@@ -120,7 +123,7 @@ class FrameData(Structure):
         ("Distance", c_float),
         ("Bandwidth", c_int),
         ("DeviceID", c_int),
-        # Will likely need a 15 long void* here called "Reserved"
+        ("Reserved", (c_voidp * 15))
     ]
 
 
