@@ -9,5 +9,5 @@ severity_threshold = 3
 
 
 def log(message, severity):
-    if severity >= severity_threshold:
+    if severity <= severity_threshold:
         print(str(datetime.now()) + " - " + message)
