@@ -77,8 +77,10 @@ def initialize():
 
 
 def stop_all():
+    log("Stopping all devices", 3)
     func = dll.QLDevice_Stop_All
     __display_error(func())
+    log("All devices stopped", 2)
 
 
 class QLXYPairFloat(Structure):
