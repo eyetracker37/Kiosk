@@ -8,6 +8,8 @@ error_list = ['OK', 'Invalid Device ID', 'Invalid Settings ID', 'Invalid Calibra
               'Internal Error', 'Buffer Too Small', 'Calibration Not Initialized', 'Device Not Started',
               'Device Not Supported', 'Settings Not Found', 'UNAUTHORIZED', 'Invalid Group']
 
+connected_device = 0  # This is set on initialization
+
 
 def __display_error(code):
     if code is not 0:
@@ -50,6 +52,28 @@ def start(identifier):
     func = dll.QLDevice_Start
     device_id = c_int(identifier)
     __display_error(func(device_id))
+
+
+def initialize():
+    device_list = device_enumerate()
+
+    if len(device_list) is 0:
+        log("No devices found", 0)
+        return 0
+    elif len(device_list) > 1:
+        log("More than 1 device found", 1)
+
+    global connected_device
+    connected_device = device_list[0]
+
+    for device in device_list:
+        if get_status(device) is 1:
+            log("Starting device " + str(device), 2)
+            start(device)
+            log(("Waiting for device " + str(device) + " to start"), 3)
+            while get_status(device) is not 3:
+                pass
+        log(("Device " + str(device) + " started"), 3)
 
 
 def stop_all():
@@ -132,9 +156,13 @@ class FrameObject:
         self.is_valid = frame_struct.WeightedGazePoint.Valid
 
 
-def get_frame(identifier):
+def get_frame():
+    if connected_device is 0:
+        log("Attempted to get data from unconnected device", 0)
+        return None
+
     func = dll.QLDevice_GetFrame
-    device_or_group = c_int(identifier)
+    device_or_group = c_int(connected_device)
     frame_struct = FrameData()
     __display_error(func(device_or_group, c_int(1000), byref(frame_struct)))
     return FrameObject(frame_struct)
