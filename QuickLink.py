@@ -74,7 +74,6 @@ class QLEyeData(Structure):
         ("Glint1", QLXYPairFloat),
         ("GazePoint", QLXYPairFloat),
         ("Reserved", (c_voidp * 16))
-        # Reserved 16 possibly needed here
     ]
 
 
@@ -86,7 +85,6 @@ class QLWeightedGazePoint(Structure):
         ("LeftWeight", c_float),
         ("RightWeight", c_float),
         ("Reserved", (c_voidp * 16))
-        # Reserved 16 possibly needed here
     ]
 
 
@@ -127,9 +125,16 @@ class FrameData(Structure):
     ]
 
 
+class FrameObject:
+    def __init__(self, frame_struct):
+        self.x_pos = frame_struct.WeightedGazePoint.x
+        self.y_pos = frame_struct.WeightedGazePoint.y
+        self.is_valid = frame_struct.WeightedGazePoint.Valid
+
+
 def get_frame(identifier):
     func = dll.QLDevice_GetFrame
     device_or_group = c_int(identifier)
-    frame = FrameData()
-    __display_error(func(device_or_group, c_int(1000), byref(frame)))
-    print("Device ID is " + str(frame.DeviceID))
+    frame_struct = FrameData()
+    __display_error(func(device_or_group, c_int(1000), byref(frame_struct)))
+    return FrameObject(frame_struct)
