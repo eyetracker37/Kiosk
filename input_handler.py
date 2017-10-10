@@ -31,8 +31,8 @@ class CursorHandler:
             frame.y_pos = 100
 
         with lock:
-            self.cursor.x_pos = config.screen_x * frame.x_pos / 100
-            self.cursor.y_pos = config.screen_y * frame.y_pos / 100
+            self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
+            self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
             self.cursor.is_valid = frame.is_valid
 
     def get_cursor(self):
