@@ -2,6 +2,7 @@ import quick_link
 from logger import log
 import threading
 import config
+from pygame import mouse
 
 
 is_running = False
@@ -20,22 +21,30 @@ class CursorHandler:
         self.cursor = Cursor()
 
     def update(self):
-        frame = quick_link.get_frame()
+        if config.use_tracker:
+            frame = quick_link.get_frame()
+
+            with lock:  # Make sure it isn't read while updating
+                self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
+                self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
+                self.cursor.is_valid = frame.is_valid
+        else:
+            with lock:
+                try:
+                    self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
+                except:
+                    pass
+            self.cursor.is_valid = True
 
         # Handle bounds of screen
-        if frame.x_pos < 0:
-            frame.x_pos = 0
-        if frame.x_pos > 100:
-            frame.x_pos = 100
-        if frame.y_pos < 0:
-            frame.y_pos = 0
-        if frame.y_pos > 100:
-            frame.y_pos = 100
-
-        with lock:  # Make sure it isn't read while updating
-            self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
-            self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
-            self.cursor.is_valid = frame.is_valid
+        if self.cursor.x_pos < 0:
+            self.cursor.x_pos = 0
+        if self.cursor.x_pos > config.screen_x:
+            self.cursor.x_pos = config.screen_x
+        if self.cursor.y_pos < 0:
+            self.cursor.y_pos = 0
+        if self .cursor.y_pos > config.screen_y:
+            self.cursor.y_pos = config.screen_y
 
     def get_cursor(self):
         with lock:  # Make sure it doesn't update while reading
@@ -63,7 +72,8 @@ update_thread = UpdateThread(1)
 
 
 def initialize():
-    quick_link.initialize()
+    if config.use_tracker:
+        quick_link.initialize()
     update_thread.start()
     log("Update thread started", 2)
 
@@ -78,4 +88,5 @@ def close():
     is_running = False
     update_thread.join()  # Join thread to wait until it closes
     log("Update thread closed", 2)
-    quick_link.stop_all()
+    if config.use_tracker:
+        quick_link.stop_all()
