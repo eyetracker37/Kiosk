@@ -1,2 +1,43 @@
+import os.path
+from logger import log, update_threshold
+import configparser
+
+filename = "settings.ini"
+settings_version = 1
+
+use_tracker = True
+verbosity = 3
+
 screen_x = 1920
 screen_y = 1080
+
+
+def create_settings():
+    config = configparser.ConfigParser()
+    settings_file = open(filename, 'w')
+    config.add_section('Settings')
+    config.set('Settings', 'Version', str(settings_version))
+    config.set('Settings', 'UseTracker', str(True))
+    config.set('Settings', 'Verbosity', '3')
+    config.write(settings_file)
+    settings_file.close()
+
+
+def initialize():
+    config = configparser.ConfigParser()
+    log("Loading settings", 3)
+
+    if not os.path.isfile(filename):
+        log((filename + " does not exist, creating"), 2)
+        create_settings()
+    config.read(filename)
+
+    if config.get('Settings', 'Version') != str(settings_version):
+        log((filename + " out of date and deleted"), 1)
+        create_settings()
+        config.read(filename)
+
+    global use_tracker, verbosity
+    use_tracker = ('True' == config.get('Settings', 'UseTracker'))
+    verbosity = int(config.get('Settings', 'Verbosity'))
+    update_threshold(verbosity)

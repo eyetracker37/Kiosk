@@ -1,7 +1,9 @@
 import input_handler
 from time import sleep
 import example_screen
+import config
 
+config.initialize()
 input_handler.initialize()
 
 #for i in range(0, 100):
