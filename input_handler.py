@@ -21,6 +21,8 @@ class CursorHandler:
 
     def update(self):
         frame = quick_link.get_frame()
+
+        # Handle bounds of screen
         if frame.x_pos < 0:
             frame.x_pos = 0
         if frame.x_pos > 100:
@@ -30,13 +32,13 @@ class CursorHandler:
         if frame.y_pos > 100:
             frame.y_pos = 100
 
-        with lock:
+        with lock:  # Make sure it isn't read while updating
             self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
             self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
             self.cursor.is_valid = frame.is_valid
 
     def get_cursor(self):
-        with lock:
+        with lock:  # Make sure it doesn't update while reading
             return self.cursor
 
 
@@ -74,6 +76,6 @@ def close():
     log("Closing update thread", 3)
     global is_running
     is_running = False
-    update_thread.join()
+    update_thread.join()  # Join thread to wait until it closes
     log("Update thread closed", 2)
     quick_link.stop_all()
