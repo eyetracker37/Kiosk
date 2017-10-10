@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-from math import pi
 import config
 import input_handler
 
@@ -20,7 +19,6 @@ def example():
     done = False
 
     while not done:
-        clock.tick(10)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
