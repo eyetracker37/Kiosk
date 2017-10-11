@@ -39,8 +39,11 @@ def initialize():
         config.read(filename)
 
     global use_tracker, verbosity
+
     use_tracker = ('True' == config.get('Settings', 'UseTracker'))
+
     verbosity = int(config.get('Settings', 'Verbosity'))
     update_threshold(verbosity)
+
     write_log = ('True' == config.get('Settings', 'WriteLogs'))
     set_write_log(write_log)

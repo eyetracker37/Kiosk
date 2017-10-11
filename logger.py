@@ -26,6 +26,7 @@ def log(message, severity):
     if severity <= severity_threshold:
         err_message = str(datetime.now()) + " - " + message
         print(err_message)
+
         global write_log
         if write_log:
             log_file = open(logfile, 'a')
