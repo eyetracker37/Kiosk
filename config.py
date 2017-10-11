@@ -1,9 +1,9 @@
 import os.path
-from logger import log, update_threshold
+from logger import log, update_threshold, set_write_log
 import configparser
 
 filename = "settings.ini"
-settings_version = 1
+settings_version = 2
 
 use_tracker = True
 verbosity = 3
@@ -18,6 +18,7 @@ def create_settings():
     config.add_section('Settings')
     config.set('Settings', 'Version', str(settings_version))
     config.set('Settings', 'UseTracker', str(True))
+    config.set('Settings', 'WriteLogs', str(False))
     config.set('Settings', 'Verbosity', '3')
     config.write(settings_file)
     settings_file.close()
@@ -41,3 +42,5 @@ def initialize():
     use_tracker = ('True' == config.get('Settings', 'UseTracker'))
     verbosity = int(config.get('Settings', 'Verbosity'))
     update_threshold(verbosity)
+    write_log = ('True' == config.get('Settings', 'WriteLogs'))
+    set_write_log(write_log)
