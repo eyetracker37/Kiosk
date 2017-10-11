@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
-import config
-import input_handler
+from Utils import config
+from Input import input_handler
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

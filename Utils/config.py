@@ -1,5 +1,5 @@
 import os.path
-from logger import log, update_threshold, set_write_log
+from Utils.logger import log, update_threshold, set_write_log
 import configparser
 
 filename = "settings.ini"

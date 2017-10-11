@@ -1,7 +1,6 @@
-import input_handler
-from time import sleep
+from Input import input_handler
 import example_screen
-import config
+from Utils import config
 
 config.initialize()
 input_handler.initialize()

@@ -1,7 +1,7 @@
-import quick_link
-from logger import log
+from Input import quick_link
+from Utils.logger import log
 import threading
-import config
+from Utils import config
 from pygame import mouse
 
 

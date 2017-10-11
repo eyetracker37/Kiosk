@@ -1,7 +1,7 @@
 from ctypes import *
-from logger import log
+from Utils.logger import log
 
-dll = CDLL('DLL\QuickLink2.dll')
+dll = CDLL('Input\DLL\QuickLink2.dll')
 
 error_list = ['OK', 'Invalid Device ID', 'Invalid Settings ID', 'Invalid Calibration ID', 'Invalid Target ID',
               'Invalid Password', 'Invalid Path', 'Invalid Duration', 'Invalid Pointer', 'Timeout Elapsed',
