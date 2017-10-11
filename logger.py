@@ -5,6 +5,9 @@
 
 from datetime import datetime
 
+
+logfile = "log.log"
+
 severity_threshold = 3
 
 
@@ -15,4 +18,8 @@ def update_threshold(verbosity):
 
 def log(message, severity):
     if severity <= severity_threshold:
-        print(str(datetime.now()) + " - " + message)
+        err_message = str(datetime.now()) + " - " + message
+        print(err_message)
+        log_file = open(logfile, 'a')
+        log_file.write(err_message + '\n')
+        log_file.close()
