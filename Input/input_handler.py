@@ -1,4 +1,7 @@
-from Input import quick_link
+try:
+    from Input import quick_link
+except OSError:
+    from Input import fake_quick_link as quick_link
 from Utils.logger import log
 import threading
 from Utils import config
