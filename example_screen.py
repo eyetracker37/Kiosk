@@ -12,7 +12,7 @@ RED = (255, 0, 0)
 
 def example():
     pygame.init()
-    size = [0, 0]
+    size = [config.res_width, config.res_height]
     screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
     clock = pygame.time.Clock()
 
