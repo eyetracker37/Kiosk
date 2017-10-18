@@ -3,7 +3,7 @@ from Utils.logger import log, update_threshold, set_write_log
 import configparser
 
 filename = "settings.ini"
-settings_version = 2
+settings_version = 3
 
 use_tracker = True
 verbosity = 3
