@@ -6,10 +6,10 @@ from Utils.logger import log
 import threading
 from Utils import config
 from pygame import mouse
+from Utils import thread_manager
 
 
 is_running = False
-lock = threading.Lock()
 
 
 class Cursor:
@@ -27,12 +27,12 @@ class CursorHandler:
         if config.use_tracker:
             frame = quick_link.get_frame()
 
-            with lock:  # Make sure it isn't read while updating
+            with thread_manager.input_lock:  # Make sure it isn't read while updating
                 self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
                 self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
                 self.cursor.is_valid = frame.is_valid
         else:
-            with lock:
+            with thread_manager.input_lock:
                 try:
                     self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
                 except:
@@ -50,7 +50,7 @@ class CursorHandler:
             self.cursor.y_pos = config.screen_y
 
     def get_cursor(self):
-        with lock:  # Make sure it doesn't update while reading
+        with thread_manager.input_lock:  # Make sure it doesn't update while reading
             return self.cursor
 
 
@@ -71,7 +71,7 @@ class UpdateThread(threading.Thread):
             cursor.update()
 
 
-update_thread = UpdateThread(1)
+update_thread = UpdateThread(thread_manager.get_thread_id())
 
 
 def initialize():
