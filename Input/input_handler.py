@@ -5,8 +5,10 @@ except OSError:
 from Utils.logger import log
 import threading
 from Utils import config
+import pygame
 from pygame import mouse
 from Utils import thread_manager
+from time import sleep
 
 
 is_running = False
@@ -35,7 +37,7 @@ class CursorHandler:
             with thread_manager.input_lock:
                 try:
                     self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
-                except:
+                except pygame.error:
                     pass
             self.cursor.is_valid = True
 
@@ -69,6 +71,7 @@ class UpdateThread(threading.Thread):
         is_running = True
         while is_running:
             cursor.update()
+            thread_manager.clock.tick(60)
 
 
 update_thread = UpdateThread(thread_manager.get_thread_id())

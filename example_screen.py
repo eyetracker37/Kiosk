@@ -1,8 +1,8 @@
 import pygame
-from pygame.locals import *
 from Utils import config
 from Input import input_handler
-from Elements import subwindow
+from Elements import window_elements
+from Utils.logger import  log
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -11,7 +11,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 
-class Cursor(subwindow.ChildElement):
+class Cursor(window_elements.ChildElement):
     def __init__(self, parent_window):
         super().__init__(parent_window)
         self.x = 0
@@ -29,15 +29,20 @@ class Cursor(subwindow.ChildElement):
         pygame.draw.circle(self.screen, BLUE, [self.x, self.y], 40)
 
 
-class Rectangle(subwindow.ChildElement):
+class Background(window_elements.ChildElement):
+    priority = 0
+
+    def draw(self):
+        super().draw()
+        self.screen.fill(WHITE)
+
+
+class Rectangle(window_elements.ChildElement):
     def __init__(self, parent_window):
         self.priority = 0
         super().__init__(parent_window)
         self.x = config.res_width / 2
         self.y = config.res_height / 2
-
-    def update(self):
-        super().update()
 
     def draw(self):
         super().draw()
@@ -45,28 +50,13 @@ class Rectangle(subwindow.ChildElement):
 
 
 def example():
-    pygame.init()
-    size = [config.res_width, config.res_height]
-    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
-    done = False
+    master = window_elements.MasterWindow()
 
-    window = subwindow.Subwindow(screen)
+    window = window_elements.Subwindow(master)
+    master.set_window(window)
     Cursor(window)
     Rectangle(window)
+    Background(window)
 
-    while not done:
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == K_q:
-                    done = True
-
-        screen.fill(WHITE)
-
-        window.update()
-        window.draw()
-
-    pygame.quit()
+    window_elements.run_master(master)
