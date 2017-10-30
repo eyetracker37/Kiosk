@@ -50,19 +50,25 @@ class Background(window_elements.ChildElement):
         pos = input_handler.get_cursor()
         if pos.is_valid:
             deadband = 100
+            min_speed = 5
+            feathering = 30
 
             x_off = pos.x_pos - config.screen_x / 2
             y_off = pos.y_pos - config.screen_y / 2
 
             if y_off > deadband:
-                self.y -= 5
+                speed = min_speed + (y_off - deadband) / feathering
+                self.y -= speed
             elif y_off < -deadband:
-                self.y += 5
+                speed = -min_speed + (y_off - deadband) / feathering
+                self.y -= speed
 
             if x_off > deadband:
-                self.x -= 5
+                speed = min_speed + (x_off - deadband) / feathering
+                self.x -= speed
             elif x_off < -deadband:
-                self.x += 5
+                speed = - min_speed + (x_off - deadband) / feathering
+                self.x -= speed
 
             if self.x > self.x_max:
                 self.x = self.x_max
