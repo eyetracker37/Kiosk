@@ -1,10 +1,10 @@
 from Input import input_handler
-import example_screen
+from Pages import map
 from Utils import config
 
 config.initialize()
 input_handler.initialize()
 
-example_screen.example()
+map.run()
 
 input_handler.close()

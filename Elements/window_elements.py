@@ -64,7 +64,9 @@ class MasterWindow:
         self.current_window.draw()
 
     def update(self):
-        self.current_window.update()
+        with thread_manager.screen_lock:
+            self.current_window.update()
+        thread_manager.clock.tick(60)  # TODO make this a more accurate clock
 
 
 def run_master(master):
