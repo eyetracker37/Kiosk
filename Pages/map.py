@@ -60,14 +60,14 @@ class Background(window_elements.ChildElement):
                 speed = min_speed + (y_off - deadband) / feathering
                 self.y -= speed
             elif y_off < -deadband:
-                speed = -min_speed + (y_off - deadband) / feathering
+                speed = -min_speed + (y_off + deadband) / feathering
                 self.y -= speed
 
             if x_off > deadband:
                 speed = min_speed + (x_off - deadband) / feathering
                 self.x -= speed
             elif x_off < -deadband:
-                speed = - min_speed + (x_off - deadband) / feathering
+                speed = - min_speed + (x_off + deadband) / feathering
                 self.x -= speed
 
             if self.x > self.x_max:
