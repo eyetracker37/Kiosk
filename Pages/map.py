@@ -1,4 +1,5 @@
 import pygame
+import pygame.gfxdraw
 from Utils import config
 from Input import input_handler
 from Elements import window_elements
@@ -92,12 +93,12 @@ class InteractionBox(window_elements.ChildElement):
         self.base_x = x
         self.base_y = y
         self.box = pygame.Rect(x, y, width, height)
-        self.is_selected = False
+        self.is_selected = 0
 
     def draw(self):
         super().draw()
         if self.is_selected:
-            pygame.draw.rect(self.screen, RED, self.box, 3)
+            pygame.gfxdraw.rectangle(self.screen, self.box, (255, 0, 0, self.is_selected))
 
     def update(self):
         self.box.x = self.base_x + self.background.off_x
@@ -108,9 +109,15 @@ class InteractionBox(window_elements.ChildElement):
 
         if self.background.cursor.is_valid \
                 and self.box.collidepoint(cursor_x, cursor_y):
-            self.is_selected = True
+            self.is_selected += 10
+            if self.is_selected > 255:
+                log("Button pressed", 2)
+                self.is_selected = 0
         else:
-            self.is_selected = False
+            if self.is_selected > 0:
+                self.is_selected -= 25
+                if self.is_selected < 0:
+                    self.is_selected = 0
 
 
 def run():
