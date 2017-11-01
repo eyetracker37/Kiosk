@@ -34,7 +34,7 @@ class MasterWindow:
 
     def __init__(self):
         pygame.init()
-        size = [config.res_width, config.res_height]
+        size = [config.screen_x, config.screen_y]
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 
         self.done = False

@@ -25,10 +25,10 @@ class Background(window_elements.ChildElement):
         self.y = self.height/2
 
         self.x_max = self.width/2
-        self.x_min = config.res_width - self.width/2
+        self.x_min = config.screen_x - self.width/2
 
         self.y_max = self.height/2
-        self.y_min = config.res_height - self.height/2
+        self.y_min = config.screen_y - self.height/2
 
         self.off_x = 0
         self.off_y = 0

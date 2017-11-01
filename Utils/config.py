@@ -7,8 +7,6 @@ settings_version = 3
 
 use_tracker = True
 verbosity = 3
-res_width = 1440
-res_height = 900
 
 screen_x = 1920
 screen_y = 1080
@@ -42,7 +40,7 @@ def initialize():
         create_settings()
         config.read(filename)
 
-    global use_tracker, verbosity, res_width, res_height
+    global use_tracker, verbosity, screen_x, screen_y
 
     use_tracker = ('True' == config.get('Settings', 'UseTracker'))
 
@@ -52,6 +50,5 @@ def initialize():
     write_log = ('True' == config.get('Settings', 'WriteLogs'))
     set_write_log(write_log)
 
-    res_width = int(config.get('Settings', 'ResWidth'))
-
-    res_height = int(config.get('Settings', 'ResHeight'))
+    screen_x = int(config.get('Settings', 'ResWidth'))
+    screen_y = int(config.get('Settings', 'ResHeight'))
