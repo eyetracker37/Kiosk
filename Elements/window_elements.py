@@ -76,7 +76,7 @@ def run_master(master):
                 master.draw()
             except pygame.error:
                 pass
-            thread_manager.clock.tick(60)
+        thread_manager.clock.tick(60)
 
     log("Master screen closed", 1)
 
