@@ -42,6 +42,8 @@ class MasterWindow:
         log("Master screen started", 2)
         self.update_thread = UpdateThread(self)
         self.update_thread.start()
+        self.last_tick = pygame.time.get_ticks()
+
 
     def set_window(self, window):
         self.current_window = window
@@ -64,9 +66,12 @@ class MasterWindow:
         self.current_window.draw()
 
     def update(self):
-        with thread_manager.screen_lock:
-            self.current_window.update()
-        thread_manager.clock.tick(60)  # TODO make this a more accurate clock
+        update_time = 1000 / 60
+        time_current = pygame.time.get_ticks()
+        if time_current - self.last_tick > update_time:
+            self.last_tick += update_time
+            with thread_manager.screen_lock:
+                self.current_window.update()
 
 
 def run_master(master):
