@@ -14,6 +14,7 @@ from time import sleep
 is_running = False
 
 
+# Position of the gaze/mouse on the screen
 class Cursor:
     def __init__(self):
         self.x_pos = 0
@@ -26,6 +27,7 @@ class CursorHandler:
         self.cursor = Cursor()
 
     def update(self):
+        # If getting data from the eye tracker
         if config.use_tracker:
             frame = quick_link.get_frame()
 
@@ -33,7 +35,7 @@ class CursorHandler:
                 self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
                 self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
                 self.cursor.is_valid = frame.is_valid
-        else:
+        else: # Otherwise use keyboard
             with thread_manager.input_lock:
                 try:
                     self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
@@ -59,6 +61,7 @@ class CursorHandler:
 cursor = CursorHandler()
 
 
+# Thread that gets the cursor position
 class UpdateThread(threading.Thread):
     def __init__(self, threadID):
         threading.Thread.__init__(self)
@@ -77,6 +80,7 @@ class UpdateThread(threading.Thread):
 update_thread = UpdateThread(thread_manager.get_thread_id())
 
 
+# Start getting cursor position
 def initialize():
     if config.use_tracker:
         quick_link.initialize()
@@ -84,10 +88,12 @@ def initialize():
     log("Update thread started", 2)
 
 
+# Get the cursor position
 def get_cursor():
     return cursor.get_cursor()
 
 
+# Stop getting cursor position
 def close():
     log("Closing update thread", 3)
     global is_running

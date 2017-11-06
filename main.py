@@ -3,11 +3,11 @@ from Pages import map
 from Utils import config
 from Utils.logger import log_sys_info
 
-log_sys_info()
+log_sys_info()  # Logs information about system for debug purposes
 
-config.initialize()
-input_handler.initialize()
+config.initialize()  # Loads config settings
+input_handler.initialize()  # Starts up input handler
 
-map.run()
+map.run()  # Runs entry point for GUI
 
-input_handler.close()
+input_handler.close()  # If map.run() stops, close input handler

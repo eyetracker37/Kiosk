@@ -8,10 +8,12 @@ settings_version = 3
 use_tracker = True
 verbosity = 3
 
+# Resolution of the screen
 screen_x = 1920
 screen_y = 1080
 
 
+# Create settings if they don't exist
 def create_settings():
     config = configparser.ConfigParser()
     settings_file = open(filename, 'w')

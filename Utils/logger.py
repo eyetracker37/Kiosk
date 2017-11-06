@@ -24,6 +24,7 @@ def set_write_log(setter):
     write_log = setter
 
 
+# Log a message, higher severity = less important
 def log(message, severity):
     if severity <= severity_threshold:
         err_message = str(datetime.now()) + " - " + message
@@ -36,6 +37,7 @@ def log(message, severity):
             log_file.close()
 
 
+# Log system information for debug purposes
 def log_sys_info():
     log("Platform " + platform.platform(), 1)
     log("Processor " + platform.machine(), 1)
