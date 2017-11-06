@@ -4,6 +4,8 @@
 # Level 3 - Everything
 
 from datetime import datetime
+import platform
+import pygame
 
 
 logfile = "log.log"
@@ -32,3 +34,10 @@ def log(message, severity):
             log_file = open(logfile, 'a')
             log_file.write(err_message + '\n')
             log_file.close()
+
+
+def log_sys_info():
+    log("Platform " + platform.platform(), 1)
+    log("Processor " + platform.machine(), 1)
+    log("Python version " + platform.python_version(), 1)
+    log("PyGame version " + pygame.version.ver, 1)
