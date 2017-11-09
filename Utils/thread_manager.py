@@ -11,6 +11,8 @@ screen_lock = Lock()
 
 clock = pygame.time.Clock()
 
+running = True
+
 
 # Get a unique ID for thread
 def get_thread_id():

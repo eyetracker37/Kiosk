@@ -116,13 +116,13 @@ class InteractionBox(window_elements.ChildElement):
         if self.background.cursor.is_valid \
                 and self.box.collidepoint(cursor_x, cursor_y):
             # Increase confidence user is actually "clicking" on the box
-            self.is_selected += 10
+            self.is_selected += 3
             if self.is_selected > 255:
                 log("Button pressed", 2)
                 self.is_selected = 0
         else:  # Decrease confidence user is "clicking" on the box
             if self.is_selected > 0:
-                self.is_selected -= 25
+                self.is_selected -= 10
                 if self.is_selected < 0:
                     self.is_selected = 0
 

@@ -4,7 +4,6 @@ import sys
 from pygame.locals import *
 from Utils import thread_manager
 import threading
-from time import sleep
 from Utils import config
 
 
@@ -16,13 +15,11 @@ class UpdateThread(threading.Thread):
         self.creator = creator
 
     def kill(self):
-        self.is_running = False
+        thread_manager.running = False
 
     def run(self):
         log("Starting screen update thread", 2)
-        self.is_running = True
-        while self.is_running:
-
+        while thread_manager.running:
                 try:
                     self.creator.update()
                 except AttributeError:
@@ -46,10 +43,10 @@ class MasterWindow:
         if size[0] > got_resolution_x or size[1] > got_resolution_y:
             log("Screen resolution [" + str(got_resolution_x) + ", " + str(got_resolution_y) +
                 "] too small to fit requested resolution " + str(size) + ", exiting", 0)
+            self.kill_threads()
             sys.exit()
 
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-        self.done = False
         log("Master screen started", 2)
 
         # Creates and starts the update thread
@@ -64,9 +61,12 @@ class MasterWindow:
     # Kill update thread
     def kill_threads(self):
         log("Killing threads", 2)
-        self.update_thread.kill()
+        try:
+            self.update_thread.kill()
+        except AttributeError:
+            pass
         pygame.quit()
-        self.done = True
+        thread_manager.running = False
 
     # Draws the elements on the screen
     def draw(self):
@@ -98,7 +98,7 @@ class MasterWindow:
 
 # Function will run until program is told to exit, drawing the screen
 def run_master(master):
-    while not master.done:
+    while thread_manager.running:
         with thread_manager.screen_lock:
             try:
                 master.draw()

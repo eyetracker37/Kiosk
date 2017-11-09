@@ -8,10 +8,6 @@ from Utils import config
 import pygame
 from pygame import mouse
 from Utils import thread_manager
-from time import sleep
-
-
-is_running = False
 
 
 # Position of the gaze/mouse on the screen
@@ -35,7 +31,7 @@ class CursorHandler:
                 self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
                 self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
                 self.cursor.is_valid = frame.is_valid
-        else: # Otherwise use keyboard
+        else:  # Otherwise use keyboard
             with thread_manager.input_lock:
                 try:
                     self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
@@ -68,11 +64,9 @@ class UpdateThread(threading.Thread):
         self.threadID = threadID
 
     def run(self):
-        global is_running
         global cursor
         log("Starting update thread", 3)
-        is_running = True
-        while is_running:
+        while thread_manager.running:
             cursor.update()
             thread_manager.clock.tick(60)
 
