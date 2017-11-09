@@ -1,5 +1,6 @@
 from ctypes import *
 from Utils.logger import log
+import sys
 
 dll = CDLL('Input\DLL\QuickLink2.dll')
 
@@ -55,11 +56,12 @@ def start(identifier):
 
 
 def initialize():
+    log("Getting connected eye trackers", 3)
     device_list = device_enumerate()
 
     if len(device_list) is 0:
-        log("No devices found", 0)
-        return 0
+        log("No eye tracker device found, exiting", 0)
+        sys.exit()
     elif len(device_list) > 1:
         log("More than 1 device found", 1)
 

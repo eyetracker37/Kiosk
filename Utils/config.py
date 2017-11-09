@@ -30,7 +30,6 @@ def create_settings():
 
 def initialize():
     config = configparser.ConfigParser()
-    log("Loading settings", 3)
 
     if not os.path.isfile(filename):
         log((filename + " does not exist, creating"), 2)
@@ -54,3 +53,5 @@ def initialize():
 
     screen_x = int(config.get('Settings', 'ResWidth'))
     screen_y = int(config.get('Settings', 'ResHeight'))
+
+    log("Settings loaded", 3)

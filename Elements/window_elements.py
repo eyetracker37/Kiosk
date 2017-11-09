@@ -38,6 +38,21 @@ class MasterWindow:
         # Creates the screen
         pygame.init()
         size = [config.screen_x, config.screen_y]
+        got_resolution_x = pygame.display.Info().current_w
+        got_resolution_y = pygame.display.Info().current_h
+        log("Attempting to start screen of size " + str(size) +
+            " on monitor of size [" + str(got_resolution_x) + ", " + str(got_resolution_y) + "]", 2)
+        if size[0] > got_resolution_x:
+            log("Horizontal screen resolution " + str(got_resolution_x) + " too small for desired width " + str(size[0])
+                + ", decreasing to " + str(got_resolution_x), 0)
+            size[0] = got_resolution_x
+
+        if size[1] > got_resolution_y:
+            log("Vertical screen resolution " + str(got_resolution_y) + " too small for desired width " + str(size[1])
+                + ", decreasing to " + str(got_resolution_y), 0)
+
+            size[1] = got_resolution_y
+
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
         self.done = False
         log("Master screen started", 2)
@@ -65,9 +80,11 @@ class MasterWindow:
         # and must instead be in the master task
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                log("Received quit signal", 2)
                 self.kill_threads()
             elif event.type == pygame.KEYDOWN:
                 if event.key == K_q:
+                    log("Q pressed", 2)
                     self.kill_threads()
             else:
                 pass
