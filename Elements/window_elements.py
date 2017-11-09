@@ -80,9 +80,11 @@ class MasterWindow:
         # and must instead be in the master task
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                log("Received quit signal", 2)
                 self.kill_threads()
             elif event.type == pygame.KEYDOWN:
                 if event.key == K_q:
+                    log("Q pressed", 2)
                     self.kill_threads()
             else:
                 pass
