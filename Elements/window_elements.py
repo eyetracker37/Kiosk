@@ -1,5 +1,6 @@
 from Utils.logger import log
 import pygame
+import sys
 from pygame.locals import *
 from Utils import thread_manager
 import threading
@@ -42,16 +43,10 @@ class MasterWindow:
         got_resolution_y = pygame.display.Info().current_h
         log("Attempting to start screen of size " + str(size) +
             " on monitor of size [" + str(got_resolution_x) + ", " + str(got_resolution_y) + "]", 2)
-        if size[0] > got_resolution_x:
-            log("Horizontal screen resolution " + str(got_resolution_x) + " too small for desired width " + str(size[0])
-                + ", decreasing to " + str(got_resolution_x), 0)
-            size[0] = got_resolution_x
-
-        if size[1] > got_resolution_y:
-            log("Vertical screen resolution " + str(got_resolution_y) + " too small for desired width " + str(size[1])
-                + ", decreasing to " + str(got_resolution_y), 0)
-
-            size[1] = got_resolution_y
+        if size[0] > got_resolution_x or size[1] > got_resolution_y:
+            log("Screen resolution [" + str(got_resolution_x) + ", " + str(got_resolution_y) +
+                "] too small to fit requested resolution " + str(size) + ", exiting", 0)
+            sys.exit()
 
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
         self.done = False
