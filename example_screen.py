@@ -1,7 +1,8 @@
 import pygame
-from pygame.locals import *
 from Utils import config
 from Input import input_handler
+from Elements import window_elements
+from Utils.logger import  log
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -10,28 +11,52 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 
-def example():
-    pygame.init()
-    size = [config.screen_x, config.screen_y]
-    screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-    clock = pygame.time.Clock()
+class Cursor(window_elements.ChildElement):
+    def __init__(self, parent_window):
+        super().__init__(parent_window)
+        self.x = 0
+        self.y = 0
 
-    done = False
-
-    while not done:
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == K_q:
-                    done = True
-
-        screen.fill(WHITE)
+    def update(self):
+        super().update()
         pos = input_handler.get_cursor()
         if pos.is_valid:
-            pygame.draw.circle(screen, BLUE, [pos.x_pos, pos.y_pos], 40)
+            self.x = pos.x_pos
+            self.y = pos.y_pos
 
-        pygame.display.flip()
+    def draw(self):
+        super().draw()
+        pygame.draw.circle(self.screen, BLUE, [self.x, self.y], 40)
 
-    pygame.quit()
+
+class Background(window_elements.ChildElement):
+    priority = 0
+
+    def draw(self):
+        super().draw()
+        self.screen.fill(WHITE)
+
+
+class Rectangle(window_elements.ChildElement):
+    def __init__(self, parent_window):
+        self.priority = 0
+        super().__init__(parent_window)
+        self.x = config.screen_x / 2
+        self.y = config.screen_y / 2
+
+    def draw(self):
+        super().draw()
+        pygame.draw.rect(self.screen, BLACK, [150, 10, 50, 20])
+
+
+def example():
+
+    master = window_elements.MasterWindow()
+
+    window = window_elements.Subwindow(master)
+    master.set_window(window)
+    Cursor(window)
+    Rectangle(window)
+    Background(window)
+
+    window_elements.run_master(master)
