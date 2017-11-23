@@ -7,13 +7,13 @@ settings_version = 3
 
 use_tracker = True
 verbosity = 3
-res_width = 1440
-res_height = 900
 
+# Resolution of the screen
 screen_x = 1920
 screen_y = 1080
 
 
+# Create settings if they don't exist
 def create_settings():
     config = configparser.ConfigParser()
     settings_file = open(filename, 'w')
@@ -30,7 +30,6 @@ def create_settings():
 
 def initialize():
     config = configparser.ConfigParser()
-    log("Loading settings", 3)
 
     if not os.path.isfile(filename):
         log((filename + " does not exist, creating"), 2)
@@ -42,7 +41,7 @@ def initialize():
         create_settings()
         config.read(filename)
 
-    global use_tracker, verbosity, res_width, res_height
+    global use_tracker, verbosity, screen_x, screen_y
 
     use_tracker = ('True' == config.get('Settings', 'UseTracker'))
 
@@ -52,6 +51,7 @@ def initialize():
     write_log = ('True' == config.get('Settings', 'WriteLogs'))
     set_write_log(write_log)
 
-    res_width = int(config.get('Settings', 'ResWidth'))
+    screen_x = int(config.get('Settings', 'ResWidth'))
+    screen_y = int(config.get('Settings', 'ResHeight'))
 
-    res_height = int(config.get('Settings', 'ResHeight'))
+    log("Settings loaded", 3)

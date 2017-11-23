@@ -4,6 +4,8 @@
 # Level 3 - Everything
 
 from datetime import datetime
+import platform
+import pygame
 
 
 logfile = "log.log"
@@ -22,6 +24,7 @@ def set_write_log(setter):
     write_log = setter
 
 
+# Log a message, higher severity = less important
 def log(message, severity):
     if severity <= severity_threshold:
         err_message = str(datetime.now()) + " - " + message
@@ -32,3 +35,11 @@ def log(message, severity):
             log_file = open(logfile, 'a')
             log_file.write(err_message + '\n')
             log_file.close()
+
+
+# Log system information for debug purposes
+def log_sys_info():
+    log("Platform " + platform.platform(), 1)
+    log("Processor " + platform.machine(), 1)
+    log("Python version " + platform.python_version(), 1)
+    log("PyGame version " + pygame.version.ver, 1)
