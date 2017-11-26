@@ -30,7 +30,7 @@ def log(message, severity):
     if severity <= severity_threshold:
         err_message = str(datetime.now()) + " - " + message
 
-        with log_lock:  # Prevent multiple prints at same time
+        with log_lock:
             print(err_message)
 
             global write_log
