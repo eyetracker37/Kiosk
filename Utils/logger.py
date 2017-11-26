@@ -4,6 +4,7 @@
 # Level 3 - Everything
 
 from datetime import datetime
+from Utils.thread_manager import log_lock
 import platform
 import pygame
 
@@ -28,13 +29,15 @@ def set_write_log(setter):
 def log(message, severity):
     if severity <= severity_threshold:
         err_message = str(datetime.now()) + " - " + message
-        print(err_message)
 
-        global write_log
-        if write_log:
-            log_file = open(logfile, 'a')
-            log_file.write(err_message + '\n')
-            log_file.close()
+        with log_lock:
+            print(err_message)
+
+            global write_log
+            if write_log:
+                log_file = open(logfile, 'a')
+                log_file.write(err_message + '\n')
+                log_file.close()
 
 
 # Log system information for debug purposes
