@@ -13,6 +13,7 @@ NO_STATE = "aml"
 BODY = "body"
 HEADING1 = "h1"
 PARAGRAPH = "p"
+IMAGE = "img"
 
 
 class AMLParser(HTMLParser):
@@ -26,7 +27,12 @@ class AMLParser(HTMLParser):
     def feed_heading1(self, data):
         print("Heading1: " + data)
 
-    def state_machine(self, tag_type, tag):
+    def feed_image(self, attrs):
+        source = attrs[0][1]
+        alignment = attrs[1][1]
+        print("Image: " + source + " on the " + alignment)
+
+    def state_machine(self, tag_type, tag, attrs):
         if tag_type is END:
             if tag == self.state:
                 if self.state is NO_STATE:
@@ -39,22 +45,22 @@ class AMLParser(HTMLParser):
 
         if self.state is OUTSIDE:
             if tag_type is START:
-                if tag == "aml":
+                if tag == NO_STATE:
                     self.state = NO_STATE
                     return
 
         if self.state is NO_STATE:
             if tag_type is START:
-                if tag == "body":
+                if tag == BODY:
                     self.state = BODY
                     return
 
         if self.state is BODY:
             if tag_type is START:
-                if tag == "h1":
+                if tag == HEADING1:
                     self.state = HEADING1
                     return
-                if tag == "p":
+                if tag == PARAGRAPH:
                     self.state = PARAGRAPH
                     return
 
@@ -65,6 +71,12 @@ class AMLParser(HTMLParser):
             if self.state is PARAGRAPH:
                 self.feed_paragraph(tag)
                 return
+
+        if self.state is PARAGRAPH:
+            if tag_type is START:
+                if tag == IMAGE:
+                    self.feed_image(attrs)
+                    return
 
         log('Unhandled ' + tag_type + ' "' + tag + '" in state ' + self.state, 1)
 
@@ -77,14 +89,14 @@ class AMLParser(HTMLParser):
             return False
 
     def handle_starttag(self, tag, attrs):
-        self.state_machine(START, tag)
+        self.state_machine(START, tag, attrs)
 
     def handle_endtag(self, tag):
-        self.state_machine(END, tag)
+        self.state_machine(END, tag, None)
 
     def handle_data(self, data):
         if data != '\n':
-            self.state_machine(DATA, data)
+            self.state_machine(DATA, data, None)
 
 
 def load_aml(file):
