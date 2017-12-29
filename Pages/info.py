@@ -2,6 +2,7 @@ from html.parser import HTMLParser
 from Elements import window_elements
 from Utils.logger import log
 import pygame
+from Utils import config
 
 # States
 START = "START"
@@ -21,6 +22,7 @@ class Page(window_elements.Subwindow):
     priority = 127
     margins = 10
     font_size = 24
+    heading_size = 30
 
     def __init__(self, master):
         super().__init__(master)
@@ -54,22 +56,43 @@ class Paragraph(window_elements.Subwindow):
         self.master.increase_offset(increase)
 
 
-class TextLine:
+class GenericText:
     priority = 127
 
-    def __init__(self, master, text):
+    def __init__(self, master, text, font, size):
         master.register(self)
         self.screen = master.screen
         self.margins = master.margins
-        self.font_size = master.font_size
+        self.font = pygame.font.SysFont(font, size)
         self.offset = master.offset
         self.scroll = master.scroll
-        self.font = pygame.font.SysFont("comicsansms", self.font_size)
-        self.text = self.font.render(text, True, (0, 0, 0))
+        i = 1
+
+        while self.font.size(text[:i])[0] < config.screen_x and i < len(text):
+            i += 1
+
+        if i < len(text):
+            i = text.rfind(" ", 0, i) + 1
+
+        display_text = text[:i]
+
+        self.extra_text = text[i:]
+
+        self.text = self.font.render(display_text, True, (0, 0, 0))
         master.increase_offset(self.text.get_height())
 
     def draw(self):
         self.screen.blit(self.text, (self.margins, self.offset + self.scroll))
+
+
+class TextLine(GenericText):
+    def __init__(self, master, text):
+        super().__init__(master, text, "comicsansms", master.font_size)
+
+
+class Heading(GenericText):
+    def __init__(self, master, text):
+        super().__init__(master, text, "comicsansms", master.heading_size)
 
 
 class AMLParser(HTMLParser):
@@ -78,15 +101,19 @@ class AMLParser(HTMLParser):
         self.state = OUTSIDE
         self.page = Page(master)
         self.current_paragraph = None
+        self.current_line = None
 
     def create_paragraph(self):
         self.current_paragraph = Paragraph(self.page)
+        self.current_line = None
 
     def feed_text(self, data):
-        TextLine(self.current_paragraph, data)
+        while data:
+            self.current_line = TextLine(self.current_paragraph, data)
+            data = self.current_line.extra_text
 
     def feed_heading1(self, data):
-        print("Heading1: " + data)
+        Heading(self.page, data)
 
     def feed_image(self, attrs):
         source = attrs[0][1]
@@ -172,6 +199,7 @@ def load_aml(file):
 
 
 def run(file):
+    print(config.screen_x)
     master = window_elements.MasterWindow()
 
     window = window_elements.Subwindow(master)
