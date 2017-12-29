@@ -1,6 +1,7 @@
 from html.parser import HTMLParser
 from Elements import window_elements
 from Utils.logger import log
+import pygame
 
 # States
 START = "START"
@@ -16,13 +17,73 @@ PARAGRAPH = "p"
 IMAGE = "img"
 
 
+class Page(window_elements.Subwindow):
+    priority = 127
+    margins = 10
+    font_size = 24
+
+    def __init__(self, master):
+        super().__init__(master)
+        master.register(self)
+        self.offset = 0
+        self.scroll = 0
+
+    def increase_offset(self, increase):
+        self.offset += increase
+
+    def draw(self):
+        self.screen.fill((255, 255, 255))
+        super().draw()
+
+
+class Paragraph(window_elements.Subwindow):
+    priority = 127
+
+    def __init__(self, master):
+        super().__init__(master)
+        self.master = master
+        self.master.register(self)
+        self.master_margins = master.margins
+        self.margins = self.master_margins
+        self.font_size = master.font_size
+        self.offset = master.offset
+        self.scroll = master.scroll
+
+    def increase_offset(self, increase):
+        self.offset += increase
+        self.master.increase_offset(increase)
+
+
+class TextLine:
+    priority = 127
+
+    def __init__(self, master, text):
+        master.register(self)
+        self.screen = master.screen
+        self.margins = master.margins
+        self.font_size = master.font_size
+        self.offset = master.offset
+        self.scroll = master.scroll
+        self.font = pygame.font.SysFont("comicsansms", self.font_size)
+        self.text = self.font.render(text, True, (0, 0, 0))
+        master.increase_offset(self.text.get_height())
+
+    def draw(self):
+        self.screen.blit(self.text, (self.margins, self.offset + self.scroll))
+
+
 class AMLParser(HTMLParser):
-    def __init__(self):
+    def __init__(self, master):
         super().__init__()
         self.state = OUTSIDE
+        self.page = Page(master)
+        self.current_paragraph = None
 
-    def feed_paragraph(self, data):
-        print("Paragraph: " + data)
+    def create_paragraph(self):
+        self.current_paragraph = Paragraph(self.page)
+
+    def feed_text(self, data):
+        TextLine(self.current_paragraph, data)
 
     def feed_heading1(self, data):
         print("Heading1: " + data)
@@ -61,6 +122,7 @@ class AMLParser(HTMLParser):
                     self.state = HEADING1
                     return
                 if tag == PARAGRAPH:
+                    self.create_paragraph()
                     self.state = PARAGRAPH
                     return
 
@@ -69,7 +131,7 @@ class AMLParser(HTMLParser):
                 self.feed_heading1(tag)
                 return
             if self.state is PARAGRAPH:
-                self.feed_paragraph(tag)
+                self.feed_text(tag)
                 return
 
         if self.state is PARAGRAPH:
@@ -113,13 +175,14 @@ def run(file):
     master = window_elements.MasterWindow()
 
     window = window_elements.Subwindow(master)
-    master.set_window(window)
 
-    parser = AMLParser()
+    parser = AMLParser(window)
 
     doc = load_aml(file)
 
     for line in doc:
         parser.feed(line)
     parser.close_state_machine()
+
+    master.set_window(window)
     window_elements.run_master(master)
