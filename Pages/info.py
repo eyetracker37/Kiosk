@@ -20,7 +20,7 @@ IMAGE = "img"
 
 class Page(window_elements.Subwindow):
     priority = 127
-    margins = 10
+    margins = 15
     font_size = 24
     heading_size = 30
 
@@ -59,40 +59,51 @@ class Paragraph(window_elements.Subwindow):
 class GenericText:
     priority = 127
 
-    def __init__(self, master, text, font, size):
+    def __init__(self, master, font, size):
         master.register(self)
         self.screen = master.screen
         self.margins = master.margins
         self.font = pygame.font.SysFont(font, size)
         self.offset = master.offset
         self.scroll = master.scroll
+        self.line_text = None
+        self.display_text = self.font.render(' ', True, (0, 0, 0))
+        self.extra_space = config.screen_x - self.margins * 2
+        master.increase_offset(self.display_text.get_height())
+
+    def draw(self):
+        self.screen.blit(self.display_text, (self.margins, self.offset + self.scroll))
+
+    def append_text(self, text):
+        if self.line_text:
+            text = self.line_text + text
         i = 1
 
-        while self.font.size(text[:i])[0] < config.screen_x and i < len(text):
+        while self.font.size(text[:i])[0] < config.screen_x - self.margins * 2 and i < len(text):
             i += 1
 
         if i < len(text):
             i = text.rfind(" ", 0, i) + 1
 
-        display_text = text[:i]
+        self.line_text = text[:i]
 
-        self.extra_text = text[i:]
+        extra_text = text[i:]
+        self.extra_space = config.screen_x - self.margins * 2 - self.font.size(text[:i])[0]
 
-        self.text = self.font.render(display_text, True, (0, 0, 0))
-        master.increase_offset(self.text.get_height())
+        self.display_text = self.font.render(self.line_text, True, (0, 0, 0))
 
-    def draw(self):
-        self.screen.blit(self.text, (self.margins, self.offset + self.scroll))
+        return extra_text
 
 
 class TextLine(GenericText):
-    def __init__(self, master, text):
-        super().__init__(master, text, "comicsansms", master.font_size)
+    def __init__(self, master):
+        super().__init__(master, "comicsansms", master.font_size)
 
 
 class Heading(GenericText):
     def __init__(self, master, text):
-        super().__init__(master, text, "comicsansms", master.heading_size)
+        super().__init__(master, "comicsansms", master.heading_size)
+        self.append_text(text)
 
 
 class AMLParser(HTMLParser):
@@ -108,9 +119,11 @@ class AMLParser(HTMLParser):
         self.current_line = None
 
     def feed_text(self, data):
+        if self.current_line:
+            data = self.current_line.append_text(data)
         while data:
-            self.current_line = TextLine(self.current_paragraph, data)
-            data = self.current_line.extra_text
+            self.current_line = TextLine(self.current_paragraph)
+            data = self.current_line.append_text(data)
 
     def feed_heading1(self, data):
         Heading(self.page, data)
@@ -199,7 +212,6 @@ def load_aml(file):
 
 
 def run(file):
-    print(config.screen_x)
     master = window_elements.MasterWindow()
 
     window = window_elements.Subwindow(master)
