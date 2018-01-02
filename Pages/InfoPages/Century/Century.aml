@@ -1,10 +1,15 @@
 <aml>
+
+<head>
+<title>Century Hall</title>
+</head>
+
 <body>
 
 <!-- a comment -->
 
 <h1>My First Heading</h1>
-<p>My first paragraph. It will need to be very long to ensure it reaches the end of the thing. How long is that? Only I know, and I am not telling. So that's a thing I guess. Now I need to handle.<img src="outside.bmp" alignment="right"> Isn't it exciting? Now to see what happens if I just keep going as I am somewhat wont to do.</p>
+<p>My first paragraph. It will need to be very long to ensure it reaches the end of the thing. How long is that? Only I know, and I am not telling. So that's a thing I guess. Now I need to handle.<img src="outside.bmp" alignment="right" scale="1"> Isn't it exciting? Now to see what happens if I just keep going as I am somewhat wont to do.</p>
 
 <p>A new paragraph!</p>
 <p>A new paragraph!</p>

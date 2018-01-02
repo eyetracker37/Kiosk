@@ -12,7 +12,9 @@ DATA = "DATA"
 # Types
 OUTSIDE = "OUTSIDE"
 NO_STATE = "aml"
+HEAD = "head"
 BODY = "body"
+TITLE = "title"
 HEADING1 = "h1"
 PARAGRAPH = "p"
 IMAGE = "img"
@@ -21,11 +23,28 @@ LEFT = "left"
 RIGHT = "right"
 
 
+def scale(value):
+    return int(value * config.scale_factor)
+
+
+def get_image(url, resize=1):
+    try:
+        raw = pygame.image.load(url)
+    except pygame.error:
+        log(url + " does not exist", 0)
+        return None
+    width = scale(raw.get_rect().size[0] * resize)
+    height = scale(raw.get_rect().size[1] * resize)
+    scaled_image = pygame.transform.scale(raw, (width, height))
+    return scaled_image
+
+
 class Page(window_elements.Subwindow):
     priority = 127
-    margins = 15
-    font_size = 24
-    heading_size = 30
+    margins = scale(15)
+    title_size = scale(60)
+    font_size = scale(24)
+    heading_size = scale(30)
 
     def __init__(self, master):
         super().__init__(master)
@@ -53,7 +72,7 @@ class Page(window_elements.Subwindow):
 
 
 class Paragraph(window_elements.Subwindow):
-    priority = 127
+    priority = 32
 
     def __init__(self, master):
         super().__init__(master)
@@ -88,7 +107,7 @@ class Paragraph(window_elements.Subwindow):
 
 
 class GenericAmlElement:
-    priority = 127
+    priority = 32
 
     def __init__(self, master):
         master.register(self)
@@ -99,6 +118,27 @@ class GenericAmlElement:
 
     def draw(self):
         pass
+
+
+class Title:
+    priority = 64
+
+    def __init__(self, master, title, directory):
+        master.register(self)
+        self.screen = master.screen
+        self.master = master
+        self.font = pygame.font.SysFont("comicsansms", master.title_size)
+        self.title_text = title
+        self.display_text = self.font.render(self.title_text, True, (0, 125, 0))
+        self.scroll = 0
+        url = directory + "header.bmp"
+        self.img = get_image(url)
+        self.width = self.img.get_rect().size[0]
+        self.height = self.img.get_rect().size[1]
+
+    def draw(self):
+        self.screen.blit(self.img, (0, 0))
+        self.screen.blit(self.display_text, (0, self.scroll))
 
 
 class TextLine(GenericAmlElement):
@@ -164,22 +204,19 @@ class Heading(GenericAmlElement):
 
 
 class Image(GenericAmlElement):
-    def __init__(self, master, alignment, url):
+    def __init__(self, master, alignment, url, resize):
         super().__init__(master)
-        try:
-            self.img = pygame.image.load(url)
-            self.width = self.img.get_rect().size[0]
-            self.height = self.img.get_rect().size[1]
-            self.y_off = self.master.last_offset
-            if alignment == LEFT:
-                master.set_left_margin(self.width)
-                self.x_off = self.margins
-            elif alignment == RIGHT:
-                master.set_right_margin(self.width)
-                self.x_off = config.screen_x - self.width - self.margins
-            master.set_next_clear(self.y_off + self.height)
-        except pygame.error:
-            log(url + " does not exist", 0)
+        self.img = get_image(url, resize)
+        self.width = self.img.get_rect().size[0]
+        self.height = self.img.get_rect().size[1]
+        self.y_off = self.master.last_offset
+        if alignment == LEFT:
+            master.set_left_margin(self.width)
+            self.x_off = self.margins
+        elif alignment == RIGHT:
+            master.set_right_margin(self.width)
+            self.x_off = config.screen_x - self.width - self.margins
+        master.set_next_clear(self.y_off + self.height)
 
     def draw(self):
         self.screen.blit(self.img, (self.x_off, self.y_off))
@@ -196,7 +233,9 @@ class AMLParser(HTMLParser):
         self.page = Page(master)
         self.current_paragraph = None
         self.current_line = None
+        self.title = None
         self.directory = None
+        self.base_offset = 0
 
     def load_aml(self, file):
         try:
@@ -210,6 +249,10 @@ class AMLParser(HTMLParser):
         for line in doc:
             self.feed(line)
         return self.close_state_machine()
+
+    def create_title(self, title):
+        self.title = Title(self.page, title, self.directory)
+        self.page.increase_offset(self.title.height)
 
     def create_paragraph(self):
         self.current_paragraph = Paragraph(self.page)
@@ -228,8 +271,9 @@ class AMLParser(HTMLParser):
     def feed_image(self, attrs):
         source = attrs[0][1]
         alignment = attrs[1][1]
+        resize = int(attrs[2][1])
         url = self.directory + source
-        img = Image(self.current_paragraph, alignment, url)
+        img = Image(self.current_paragraph, alignment, url, resize)
         if not self.current_line.shift(alignment, img.width + self.page.margins):
             img.shift()
 
@@ -238,8 +282,10 @@ class AMLParser(HTMLParser):
             if tag == self.state:
                 if self.state is NO_STATE:
                     self.state = OUTSIDE
-                elif self.state is BODY:
+                elif self.state is BODY or self.state is HEAD:
                     self.state = NO_STATE
+                elif self.state is TITLE:
+                    self.state = HEAD
                 else:
                     self.state = BODY
                 return
@@ -255,6 +301,9 @@ class AMLParser(HTMLParser):
                 if tag == BODY:
                     self.state = BODY
                     return
+                if tag == HEAD:
+                    self.state = HEAD
+                    return
 
         if self.state is BODY:
             if tag_type is START:
@@ -266,9 +315,18 @@ class AMLParser(HTMLParser):
                     self.state = PARAGRAPH
                     return
 
+        if self.state is HEAD:
+            if tag_type is START:
+                if tag == TITLE:
+                    self.state = TITLE
+                    return
+
         if tag_type is DATA:
             if self.state is HEADING1:
                 self.feed_heading1(tag)
+                return
+            if self.state is TITLE:
+                self.create_title(tag)
                 return
             if self.state is PARAGRAPH:
                 self.feed_text(tag)
