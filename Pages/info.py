@@ -2,6 +2,7 @@ from html.parser import HTMLParser
 from Elements import window_elements
 from Utils.logger import log
 import pygame
+import re
 from Utils import config
 
 # States
@@ -158,6 +159,8 @@ class TextLine(GenericAmlElement):
         self.screen.blit(self.display_text, (self.margins + self.left_margin, self.offset + self.scroll))
 
     def append_text(self, text):
+        text = text.strip()  # Remove newlines and extra spacing
+        text = text + ' '  # Ensure there is a single space
         if self.line_text:
             text = self.line_text + text
 
