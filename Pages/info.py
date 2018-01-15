@@ -2,7 +2,7 @@ from html.parser import HTMLParser
 from Elements import window_elements
 from Utils.logger import log
 import pygame
-import re
+from Input import input_handler
 from Utils import config
 
 # States
@@ -49,6 +49,7 @@ class Page(window_elements.Subwindow):
 
     def __init__(self, master):
         super().__init__(master)
+        self.cursor = input_handler.get_cursor()
         master.register(self)
         self.offset = 0
         self.scroll = 0
@@ -70,6 +71,31 @@ class Page(window_elements.Subwindow):
     def go_next_clear(self):
         self.offset = self.next_clear
         return self.next_clear
+
+    def update(self):
+        super().update()
+        self.cursor = input_handler.get_cursor()
+        if self.cursor.is_valid:
+            deadband = 100
+            min_speed = 5  # Minimum movement speed if moving
+            feathering = 30  # Lower = faster
+
+            # Distance from center
+            y_off = self.cursor.y_pos - config.screen_y / 2
+
+            # Check if x and y are outside the deadband (center) range
+            if y_off > deadband:
+                speed = min_speed + (y_off - deadband) / feathering
+                self.scroll -= speed
+            elif y_off < -deadband:
+                speed = -min_speed + (y_off + deadband) / feathering
+                self.scroll -= speed
+
+            # Make sure map doesn't go off the edge
+            if self.scroll < -self.offset + config.screen_y:
+                self.scroll = -self.offset + config.screen_y
+            elif self.scroll > 0:
+                self.scroll = 0
 
 
 class Paragraph(window_elements.Subwindow):
@@ -106,6 +132,13 @@ class Paragraph(window_elements.Subwindow):
     def set_next_clear(self, next):
         self.master.next_clear = next
 
+    def close(self):
+        self.master.unregister()
+
+    def update(self):
+        super().update()
+        self.scroll = self.master.scroll
+
 
 class GenericAmlElement:
     priority = 32
@@ -115,40 +148,43 @@ class GenericAmlElement:
         self.screen = master.screen
         self.offset = master.offset
         self.margins = master.margins
+        self.left_margin = master.left_margin
+        self.right_margin = master.right_margin
+        self.scroll = master.scroll
         self.master = master
 
     def draw(self):
         pass
 
+    def update(self):
+        self.scroll = self.master.scroll
 
-class Title:
+    def close(self):
+        self.master.unregister()
+
+
+class Title(GenericAmlElement):
     priority = 64
 
     def __init__(self, master, title, directory):
-        master.register(self)
-        self.screen = master.screen
-        self.master = master
+        super().__init__(master)
         self.font = pygame.font.SysFont("comicsansms", master.title_size)
         self.title_text = title
         self.display_text = self.font.render(self.title_text, True, (0, 125, 0))
-        self.scroll = 0
         url = directory + "header.bmp"
         self.img = get_image(url)
         self.width = self.img.get_rect().size[0]
         self.height = self.img.get_rect().size[1]
 
     def draw(self):
-        self.screen.blit(self.img, (0, 0))
-        self.screen.blit(self.display_text, (0, self.scroll))
+        self.screen.blit(self.img, (0, self.scroll))
+        self.screen.blit(self.display_text, (self.margins, self.scroll))
 
 
 class TextLine(GenericAmlElement):
     def __init__(self, master):
         super().__init__(master)
         self.font = pygame.font.SysFont("comicsansms", master.font_size)
-        self.left_margin = master.left_margin
-        self.right_margin = master.right_margin
-        self.scroll = master.scroll
         self.line_text = None
         self.display_text = None
         dummy_text = self.font.render(' ', True, (0, 0, 0))
@@ -165,7 +201,8 @@ class TextLine(GenericAmlElement):
             text = self.line_text + text
 
         i = 1
-        while self.font.size(text[:i])[0] < config.screen_x - self.margins * 2 - self.left_margin - self.right_margin and i < len(text):
+        while self.font.size(text[:i])[0] < config.screen_x - self.margins * 2 - self.left_margin - self.right_margin\
+                and i < len(text):
             i += 1
 
         if i < len(text):
@@ -222,7 +259,7 @@ class Image(GenericAmlElement):
         master.set_next_clear(self.y_off + self.height)
 
     def draw(self):
-        self.screen.blit(self.img, (self.x_off, self.y_off))
+        self.screen.blit(self.img, (self.x_off, self.y_off + self.scroll))
 
     def shift(self):
         self.y_off = self.master.offset
@@ -274,7 +311,7 @@ class AMLParser(HTMLParser):
     def feed_image(self, attrs):
         source = attrs[0][1]
         alignment = attrs[1][1]
-        resize = int(attrs[2][1])
+        resize = float(attrs[2][1])
         url = self.directory + source
         img = Image(self.current_paragraph, alignment, url, resize)
         if not self.current_line.shift(alignment, img.width + self.page.margins):
