@@ -399,14 +399,12 @@ class AMLParser(HTMLParser):
             self.state_machine(DATA, data, None)
 
 
-def run(file):
-    master = window_elements.MasterWindow()
+def run(master, file):
 
     window = window_elements.Subwindow(master)
-
     parser = AMLParser(window)
 
     parser.load_aml(file)
 
     master.set_window(window)
-    window_elements.run_master(master)
+    #window_elements.run_master(master)

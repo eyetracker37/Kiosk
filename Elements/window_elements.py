@@ -114,6 +114,7 @@ def run_master(master):
 class Subwindow:
 
     def __init__(self, master):
+        self.parent = master
         self.screen = master.screen
         self.child_list = []  # All of the elements on the screen
         pass
@@ -139,6 +140,13 @@ class Subwindow:
     def unregister(self, child):
         if child in self.child_list:
             self.child_list.remove(child)
+            log("Unregistered", 3)
+
+    def close(self):
+        log("Closing window", 3)
+        for child in self.child_list:
+            log("Closing instance", 3)
+            child.close()
 
 
 # Template for elements on the screen

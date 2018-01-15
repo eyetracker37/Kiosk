@@ -4,6 +4,7 @@ from Utils import config
 from Input import input_handler
 from Elements import window_elements
 from Utils.logger import log
+from Pages import info
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -90,7 +91,7 @@ class Background(window_elements.ChildElement):
 class InteractionBox(window_elements.ChildElement):
     priority = 255  # Draw on top
 
-    def __init__(self, background, x, y, width, height):
+    def __init__(self, background, x, y, width, height, target):
         self.background = background
         parent = background.parent
         super().__init__(parent)
@@ -98,6 +99,9 @@ class InteractionBox(window_elements.ChildElement):
         self.base_y = y
         self.box = pygame.Rect(x, y, width, height)
         self.is_selected = 0
+        self.target = target
+        self.master_window = parent.parent
+        self.parent = parent
 
     def draw(self):
         super().draw()
@@ -120,6 +124,8 @@ class InteractionBox(window_elements.ChildElement):
             if self.is_selected > 255:
                 log("Button pressed", 2)
                 self.is_selected = 0
+                self.parent.close()
+                info.run(self.master_window, self.target)
         else:  # Decrease confidence user is "clicking" on the box
             if self.is_selected > 0:
                 self.is_selected -= 10
@@ -127,14 +133,13 @@ class InteractionBox(window_elements.ChildElement):
                     self.is_selected = 0
 
 
-def run():
+def run(master):
     log("Map window loading", 2)
-    master = window_elements.MasterWindow()
 
     window = window_elements.Subwindow(master)
     master.set_window(window)
     background = Background(window)
-    InteractionBox(background, 837, 837, 135, 119)  # TECH
+    InteractionBox(background, 837, 837, 135, 119, "Century")  # CENTURY
     log("Loaded map window", 3)
 
     window_elements.run_master(master)
