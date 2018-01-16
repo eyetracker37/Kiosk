@@ -172,7 +172,7 @@ class Title(GenericAmlElement):
         self.title_text = title
         self.display_text = self.font.render(self.title_text, True, (0, 125, 0))
         url = directory + "header.bmp"
-        self.img = get_image(url)
+        self.img = get_image(url, 1.01)
         self.width = self.img.get_rect().size[0]
         self.height = self.img.get_rect().size[1]
 
