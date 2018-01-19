@@ -9,6 +9,9 @@ input_lock = Lock()
 # Lock for control of screen elements (e.g draw or update)
 screen_lock = Lock()
 
+# Lock for logging
+log_lock = Lock()
+
 clock = pygame.time.Clock()
 
 running = True

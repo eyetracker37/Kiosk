@@ -12,6 +12,8 @@ verbosity = 3
 screen_x = 1920
 screen_y = 1080
 
+scale_factor = 1
+
 
 # Create settings if they don't exist
 def create_settings():
@@ -41,7 +43,7 @@ def initialize():
         create_settings()
         config.read(filename)
 
-    global use_tracker, verbosity, screen_x, screen_y
+    global use_tracker, verbosity, screen_x, screen_y, scale_factor
 
     use_tracker = ('True' == config.get('Settings', 'UseTracker'))
 
@@ -53,5 +55,7 @@ def initialize():
 
     screen_x = int(config.get('Settings', 'ResWidth'))
     screen_y = int(config.get('Settings', 'ResHeight'))
+
+    scale_factor = screen_x / 1920
 
     log("Settings loaded", 3)

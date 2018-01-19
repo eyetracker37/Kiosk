@@ -85,6 +85,7 @@ class MasterWindow:
                 pass
 
         self.current_window.draw()
+        pygame.display.flip()
 
     # Updates the elements on the screen, but does not actually draw them
     def update(self):
@@ -111,10 +112,11 @@ def run_master(master):
 
 # Template for window being displayed by the master window
 class Subwindow:
-    child_list = []  # All of the elements on the screen
 
     def __init__(self, master):
+        self.parent = master
         self.screen = master.screen
+        self.child_list = []  # All of the elements on the screen
         pass
 
     def update(self):
@@ -124,7 +126,6 @@ class Subwindow:
     def draw(self):
         for child in self.child_list:
             child.draw()
-        pygame.display.flip()
 
     # Register as a child of the Subwindow to be added to the update/draw list
     def register(self, child):
@@ -139,6 +140,13 @@ class Subwindow:
     def unregister(self, child):
         if child in self.child_list:
             self.child_list.remove(child)
+            log("Unregistered", 3)
+
+    def close(self):
+        log("Closing window", 3)
+        for child in self.child_list:
+            log("Closing instance", 3)
+            child.close()
 
 
 # Template for elements on the screen
