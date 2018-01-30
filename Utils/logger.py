@@ -6,6 +6,7 @@
 from datetime import datetime
 import platform
 import pygame
+import threading
 
 
 logfile = "log.log"
@@ -27,7 +28,8 @@ def set_write_log(setter):
 # Log a message, higher severity = less important
 def log(message, severity):
     if severity <= severity_threshold:
-        err_message = str(datetime.now()) + " - " + message
+        thread_id = threading.get_ident()
+        err_message = str(datetime.now()) + " - " + str(thread_id) + " - " + message
         print(err_message)
 
         global write_log
