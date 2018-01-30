@@ -231,23 +231,21 @@ def calibration_create():
     calibration_id = c_int(0)
     calibration_id_pointer = pointer(calibration_id)
     __display_error(func(calibration_source, calibration_id_pointer))
-    return calibration_id.value
+    return calibration_id
 
 
-def calibration_initialize(identifier, calibration):
+def calibration_initialize(identifier, calibration_id):
     func = dll.QLCalibration_Initialize
     QL_CALIBRATION_TYPE_5 = c_int(0)
     device_id = c_int(identifier)
-    calibration_id = c_int(calibration)
     calibration_type = QL_CALIBRATION_TYPE_5   # Alec we are planning on using the 5 point calibration type which in the program is written QL_CALIBRATION_TYPE_5 but it did not like that so we tried 5 you may need to change this
     __display_error(func(device_id, calibration_id, calibration_type))
     return
 
 
-def calibration_get_targets():
+def calibration_get_targets(calibration_id):
     num = 5
     func = dll.QLCalibration_GetTargets
-    calibration_id = calibration_create()
     num_targets = c_int(num)
     num_targets_pointer = pointer(num_targets)
     targets = (QLCalibrationTarget * num)()
@@ -261,7 +259,6 @@ def calibration_get_targets():
         y = target.y
         app = [target_id, x, y]
         target_list.append(app)
-    print(target_list)
     return target_list
 
 
