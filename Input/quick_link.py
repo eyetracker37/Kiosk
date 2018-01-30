@@ -264,11 +264,10 @@ def calibration_get_targets(calibration_id):
 
 def calibration_calibrate(calibration, target, duration, block):
     func = dll.QLCalibration_Calibrate
-    calibration_id = c_int(calibration)
     duration = c_int(duration)
     block = c_bool(block)
-    target_id = c_int(target)       #Emily's program is needed 5 is just a place holder
-    __display_error(func(calibration_id, target_id, duration, block))
+    target_id = c_int(target)
+    __display_error(func(calibration, target_id, duration, block))
     return
 
 
@@ -284,16 +283,13 @@ def calibration_get_scoring(calibration,  target, eye_type):
     return
 
 
-def calibration_get_status(calibration,  target, eye_type):
+def calibration_get_status(calibration, target):
     func = dll.QLCalibration_GetStatus
-    calibration_id = c_int(calibration)
-    target_id = c_int(target)  # Emily's program is needed 5 is just a place holder
-    eye_type = c_int(eye_type)
-    calibration_status = c_int(0)  # This will be changed to an if statement at a later time
-    calibration_status_pointer = pointer(calibration_status)
-    __display_error(func(calibration_id, target_id, eye_type, calibration_status_pointer))
-    cal_status = calibration_status.value
-    return cal_status
+    target_id = c_int(target)
+    status = c_int(0)
+    status_pointer = pointer(status)
+    __display_error(func(calibration, target_id, status_pointer))
+    return status.value
 
 
 def calibration_finalize(calibration):

@@ -24,11 +24,6 @@ class States(Enum):
     SHRINKING = 6
 
 
-def is_calibrated():
-    number = randint(0, 100)
-    return number == 50
-
-
 # Map background
 class Background(window_elements.ChildElement):
     priority = 0  # Draw on bottom
@@ -41,6 +36,7 @@ class Background(window_elements.ChildElement):
 class CalibrationPoint(window_elements.ChildElement):
     def __init__(self, parent_window, calibration):
         super().__init__(parent_window)
+        self.current_target = None
         self.calibration = calibration
         self.targets = quick_link.calibration_get_targets(calibration)
         self.x = config.screen_x / 2
@@ -57,10 +53,21 @@ class CalibrationPoint(window_elements.ChildElement):
         self.size = self.grown_size
         self.color = WHITE
 
+    def is_calibrating(self):
+        status = quick_link.calibration_get_status(self.calibration, self.current_target)
+        if status == 4:
+            log("Calibration failed", 0)
+            self.start_calibrating()
+        return status
+
     def get_target(self):
+        target_id = self.targets[self.calibrations_remaining - 1][0]
         x_target = int(self.targets[self.calibrations_remaining - 1][1] * config.screen_x / 100)
         y_target = int(self.targets[self.calibrations_remaining - 1][2] * config.screen_y / 100)
-        return [x_target, y_target]
+        return [target_id, x_target, y_target]
+
+    def start_calibrating(self):
+        quick_link.calibration_calibrate(self.calibration, self.current_target, 2000, False)
 
     def update(self):
         super().update()
@@ -82,14 +89,14 @@ class CalibrationPoint(window_elements.ChildElement):
                 self.x += x_distance
                 self.y += y_distance
         elif self.state == States.CALIBRATING:
-            if is_calibrated():
+            if not self.is_calibrating():
                 self.state = States.GROWING
                 log("Calibrated point", 2)
                 self.color = WHITE
         elif self.state == States.GETTING_TARGET:
             if self.calibrations_remaining:  # anything no zero true anything larger it will keep going
                 self.calibrations_remaining -= 1
-                self.target_x, self.target_y = self.get_target()
+                self.current_target, self.target_x, self.target_y = self.get_target()
                 self.state = States.GOING_TO_TARGET
                 log("Going to point " + str(self.target_x) + "," + str(self.target_y), 2)
             else:
@@ -106,6 +113,7 @@ class CalibrationPoint(window_elements.ChildElement):
             if self.size > self.shrunk_size:
                 self.size -= self.shrink_speed
             else:
+                self.start_calibrating
                 self.state = States.CALIBRATING
                 self.color = RED
 
