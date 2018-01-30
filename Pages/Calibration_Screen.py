@@ -29,12 +29,6 @@ def is_calibrated():
     return number == 50
 
 
-def get_target():
-    x_target = randint(0, config.screen_x)
-    y_target = randint(0, config.screen_y)
-    return [x_target, y_target]
-
-
 # Map background
 class Background(window_elements.ChildElement):
     priority = 0  # Draw on bottom
@@ -48,9 +42,9 @@ class CalibrationPoint(window_elements.ChildElement):
     def __init__(self, parent_window, calibration):
         super().__init__(parent_window)
         self.calibration = calibration
-        self.targets = quick_link.calibration_get_targets()
-        self.x = 0.0
-        self.y = 0.0
+        self.targets = quick_link.calibration_get_targets(calibration)
+        self.x = config.screen_x / 2
+        self.y = config.screen_y / 2
         self.target_x = 200.0
         self.target_y = 100.0
         self.state = States.GETTING_TARGET
@@ -62,6 +56,11 @@ class CalibrationPoint(window_elements.ChildElement):
         self.shrink_speed = 1
         self.size = self.grown_size
         self.color = WHITE
+
+    def get_target(self):
+        x_target = int(self.targets[self.calibrations_remaining - 1][1] * config.screen_x / 100)
+        y_target = int(self.targets[self.calibrations_remaining - 1][2] * config.screen_y / 100)
+        return [x_target, y_target]
 
     def update(self):
         super().update()
@@ -75,7 +74,7 @@ class CalibrationPoint(window_elements.ChildElement):
             y_distance /= magnitude
             x_distance *= self.speed
             y_distance *= self.speed
-            if abs(offset_x) < abs(x_distance) and abs(offset_y) < abs(y_distance):
+            if abs(offset_x) < abs(x_distance) + 0.1 and abs(offset_y) < abs(y_distance) + 0.1:
                 self.x = self.target_x
                 self.y = self.target_y
                 self.state = States.SHRINKING
@@ -90,7 +89,7 @@ class CalibrationPoint(window_elements.ChildElement):
         elif self.state == States.GETTING_TARGET:
             if self.calibrations_remaining:  # anything no zero true anything larger it will keep going
                 self.calibrations_remaining -= 1
-                self.target_x, self.target_y = get_target()
+                self.target_x, self.target_y = self.get_target()
                 self.state = States.GOING_TO_TARGET
                 log("Going to point " + str(self.target_x) + "," + str(self.target_y), 2)
             else:
@@ -128,7 +127,6 @@ def run():
     log("Initializing calibration", 3)
     quick_link.calibration_initialize(identifier, calibration)
 
-    log("Getting calibration points", 3)
     CalibrationPoint(window, calibration)
     Background(window)
     log("Loaded calibration window", 3)
