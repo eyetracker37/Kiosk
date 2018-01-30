@@ -6,6 +6,7 @@ from Elements import window_elements
 from Utils.logger import log
 from enum import Enum
 from random import randint
+from Input import quick_link
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -44,15 +45,17 @@ class Background(window_elements.ChildElement):
 
 
 class CalibrationPoint(window_elements.ChildElement):
-    def __init__(self, parent_window):
+    def __init__(self, parent_window, calibration):
         super().__init__(parent_window)
+        self.calibration = calibration
+        self.targets = quick_link.calibration_get_targets()
         self.x = 0.0
         self.y = 0.0
         self.target_x = 200.0
         self.target_y = 100.0
         self.state = States.GETTING_TARGET
         self.speed = 15.0
-        self.calibrations_remaining = 5
+        self.calibrations_remaining = len(self.targets)
         self.grown_size = 100
         self.grow_speed = 2
         self.shrunk_size = 20
@@ -113,12 +116,21 @@ class CalibrationPoint(window_elements.ChildElement):
 
 
 def run():
-    log("Map window loading", 2)
+    log("Calibration loading", 2)
     master = window_elements.MasterWindow()
     window = window_elements.Subwindow(master)
     master.set_window(window)
-    CalibrationPoint(window)
+
+    log("Creating calibration file", 3)
+    calibration = quick_link.calibration_create()
+    identifier = quick_link.connected_device
+
+    log("Initializing calibration", 3)
+    quick_link.calibration_initialize(identifier, calibration)
+
+    log("Getting calibration points", 3)
+    CalibrationPoint(window, calibration)
     Background(window)
-    log("Loaded map window", 3)
+    log("Loaded calibration window", 3)
 
     window_elements.run_master(master)

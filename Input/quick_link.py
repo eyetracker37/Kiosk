@@ -14,7 +14,7 @@ connected_device = 0  # This is set on initialization
 
 def __display_error(code):
     if code is not 0:
-        log(error_list[code], 0)
+        log("QL Error: " + error_list[code], 0)
 
 
 def get_version():
@@ -153,6 +153,14 @@ class FrameData(Structure):
     ]
 
 
+class QLCalibrationTarget(Structure):
+    _fields_ = [
+        ("targetId", c_int),
+        ("x", c_float),
+        ("y", c_float)
+    ]
+
+
 class FrameObject:
     def __init__(self, frame_struct):
         self.x_pos = frame_struct.WeightedGazePoint.x
@@ -199,7 +207,7 @@ def calibrate_eye_radius(identifier):
 
 
 def calibration_load(calibration):
-    func = dll.QLDevice_CalibrationLoad
+    func = dll.QLCalibration_Load
     path = "path one", c_char   # Alec look at this it might need to be changed it is the path name created when the calibration is created
     path_pointer = pointer(path)
     calibration_id = c_int(calibration)
@@ -209,7 +217,7 @@ def calibration_load(calibration):
 
 
 def calibration_save(calibration):
-    func = dll.QLDevice_CalibrationSave
+    func = dll.QLCalibration_Save
     path = "path one", c_char
     path_pointer = pointer(path)
     calibration_id = c_int(calibration)
@@ -218,7 +226,7 @@ def calibration_save(calibration):
 
 
 def calibration_create():
-    func = dll.QLDevice_CalibrationCreate
+    func = dll.QLCalibration_Create
     calibration_source = c_int(0)
     calibration_id = c_int(0)
     calibration_id_pointer = pointer(calibration_id)
@@ -227,7 +235,7 @@ def calibration_create():
 
 
 def calibration_initialize(identifier, calibration):
-    func = dll.QLDevice_CalibrationInitialize
+    func = dll.QLCalibration_Initialize
     QL_CALIBRATION_TYPE_5 = c_int(0)
     device_id = c_int(identifier)
     calibration_id = c_int(calibration)
@@ -237,28 +245,38 @@ def calibration_initialize(identifier, calibration):
 
 
 def calibration_get_targets():
-    func = dll.QLDevice_CalibrationGetTargets
+    num = 5
+    func = dll.QLCalibration_GetTargets
     calibration_id = calibration_create()
-    target_size = c_int(5)   # Alec this was a random number I put in if the size of the buffer needs to be different change it
-    num_targets = c_int(target_size)
+    num_targets = c_int(num)
     num_targets_pointer = pointer(num_targets)
-    target_x = c_float(0) # Alec this I believe will only find the center point it will ned to be adjusted to find multiple point
-    target_y = c_float(0)
-    calibration_target_pointer = pointer(target_x, target_y)
-    __display_error(func( calibration_id, num_targets_pointer, calibration_target_pointer))
-    return
+    targets = (QLCalibrationTarget * num)()
+    targets_pointer = pointer(targets)
+    __display_error(func(calibration_id, num_targets_pointer, targets_pointer))
+
+    target_list = []
+    for target in targets:
+        target_id = target.targetId
+        x = target.x
+        y = target.y
+        app = [target_id, x, y]
+        target_list.append(app)
+    print(target_list)
+    return target_list
 
 
-def calibration_calibrate(calibration, target):
-    func = dll.QLDevice_CalibrationCalibrate
+def calibration_calibrate(calibration, target, duration, block):
+    func = dll.QLCalibration_Calibrate
     calibration_id = c_int(calibration)
+    duration = c_int(duration)
+    block = c_bool(block)
     target_id = c_int(target)       #Emily's program is needed 5 is just a place holder
-    __display_error(func(calibration_id, target_id))
+    __display_error(func(calibration_id, target_id, duration, block))
     return
 
 
 def calibration_get_scoring(calibration,  target, eye_type):
-    func = dll.QLDevice_CalibrationGetScoring
+    func = dll.QLCalibration_GetScoring
     calibration_id = c_int(calibration)
     target_id = c_int(target)     #Emily's program is needed 5 is just a place holder
     eye_type = c_int(eye_type)      # Alec I believe this is pulling the eye type from the above but it may need to be modify
@@ -270,7 +288,7 @@ def calibration_get_scoring(calibration,  target, eye_type):
 
 
 def calibration_get_status(calibration,  target, eye_type):
-    func = dll.QLDevice_CalibrationGetStatus
+    func = dll.QLCalibration_GetStatus
     calibration_id = c_int(calibration)
     target_id = c_int(target)  # Emily's program is needed 5 is just a place holder
     eye_type = c_int(eye_type)
@@ -282,21 +300,21 @@ def calibration_get_status(calibration,  target, eye_type):
 
 
 def calibration_finalize(calibration):
-    func = dll.QLDevice_CalibrationFinalize
+    func = dll.QLCalibration_Finalize
     calibration_id = c_int(calibration)
     __display_error(func(calibration_id,))
     return
 
 
 def calibration_cancel(calibration):
-    func = dll.QLDevice_CalibrationCancel
+    func = dll.QLCalibration_Cancel
     calibration_id = c_int(calibration)
     __display_error(func(calibration_id))
     return
 
 
 def calibration_add_bias(calibration,  eye_type):
-    func = dll.QLDevice_CalibrationAddBias
+    func = dll.QLCalibration_AddBias
     calibration_id = c_int(calibration)
     eye_type = c_int(eye_type)
     xoffset = c_float(0)
