@@ -55,19 +55,25 @@ class CalibrationPoint(window_elements.ChildElement):
 
     def is_calibrating(self):
         status = quick_link.calibration_get_status(self.calibration, self.current_target)
-        if status == 4:
+        if status == 4 or status == 3 or status == 2:
             log("Calibration failed", 0)
             self.start_calibrating()
         return status
 
     def get_target(self):
-        target_id = self.targets[self.calibrations_remaining - 1][0]
-        x_target = int(self.targets[self.calibrations_remaining - 1][1] * config.screen_x / 100)
-        y_target = int(self.targets[self.calibrations_remaining - 1][2] * config.screen_y / 100)
+        target_id = self.targets[self.calibrations_remaining][0]
+        x_target = int(self.targets[self.calibrations_remaining][1] * config.screen_x / 100)
+        y_target = int(self.targets[self.calibrations_remaining][2] * config.screen_y / 100)
         return [target_id, x_target, y_target]
 
     def start_calibrating(self):
         quick_link.calibration_calibrate(self.calibration, self.current_target, 2000, False)
+
+    def get_scoring(self):
+        for i in range(5):
+            score_left = quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_LEFT)
+            score_right = quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_RIGHT)
+            log("Score for target " + str(i) + ": " + str(score_left) + "," + str(score_right), 3)
 
     def update(self):
         super().update()
@@ -94,7 +100,7 @@ class CalibrationPoint(window_elements.ChildElement):
                 log("Calibrated point", 2)
                 self.color = WHITE
         elif self.state == States.GETTING_TARGET:
-            if self.calibrations_remaining:  # anything no zero true anything larger it will keep going
+            if self.calibrations_remaining:
                 self.calibrations_remaining -= 1
                 self.current_target, self.target_x, self.target_y = self.get_target()
                 self.state = States.GOING_TO_TARGET
@@ -102,6 +108,7 @@ class CalibrationPoint(window_elements.ChildElement):
             else:
                 self.state = States.DONE
                 log("Calibration done", 1)
+                self.get_scoring()
         elif self.state == States.DONE:
             pass
         elif self.state == States.GROWING:

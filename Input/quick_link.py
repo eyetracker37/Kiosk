@@ -11,6 +11,9 @@ error_list = ['OK', 'Invalid Device ID', 'Invalid Settings ID', 'Invalid Calibra
 
 connected_device = 0  # This is set on initialization
 
+QL_EYE_TYPE_LEFT = 0
+QL_EYE_TYPE_RIGHT = 1
+
 
 def __display_error(code):
     if code is not 0:
@@ -161,6 +164,14 @@ class QLCalibrationTarget(Structure):
     ]
 
 
+class QLCalibrationScore(Structure):
+    _fields_ = [
+        ("x", c_float),
+        ("y", c_float),
+        ("score", c_float)
+    ]
+
+
 class FrameObject:
     def __init__(self, frame_struct):
         self.x_pos = frame_struct.WeightedGazePoint.x
@@ -271,16 +282,15 @@ def calibration_calibrate(calibration, target, duration, block):
     return
 
 
-def calibration_get_scoring(calibration,  target, eye_type):
+def calibration_get_scoring(calibration, target_id, checked_eye):
     func = dll.QLCalibration_GetScoring
-    calibration_id = c_int(calibration)
-    target_id = c_int(target)     #Emily's program is needed 5 is just a place holder
-    eye_type = c_int(eye_type)      # Alec I believe this is pulling the eye type from the above but it may need to be modify
-    score_x = 0.01
-    score_y = 0.01
-    calibration_score_pointer = pointer(score_x, score_y)
-    __display_error(func(calibration_id, target_id, eye_type, calibration_score_pointer))
-    return
+    target = c_int(target_id)
+    eye = c_int(checked_eye)
+    score = QLCalibrationScore()
+    score_ptr = pointer(score)
+    __display_error(func(calibration, target, eye, score_ptr))
+    mag_score = score.score
+    return mag_score
 
 
 def calibration_get_status(calibration, target):
