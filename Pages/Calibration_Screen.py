@@ -45,7 +45,8 @@ class CalibrationPoint(window_elements.ChildElement):
         self.target_y = 100.0
         self.state = States.GETTING_TARGET
         self.speed = 15.0
-        self.calibrations_remaining = len(self.targets)
+        self.num_targets = len(self.targets)
+        self.calibrations_remaining = self.num_targets
         self.grown_size = 100
         self.grow_speed = 2
         self.shrunk_size = 20
@@ -70,10 +71,15 @@ class CalibrationPoint(window_elements.ChildElement):
         quick_link.calibration_calibrate(self.calibration, self.current_target, 2000, False)
 
     def get_scoring(self):
+        sum = 0
         for i in range(5):
-            score_left = quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_LEFT)
-            score_right = quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_RIGHT)
-            log("Score for target " + str(i) + ": " + str(score_left) + "," + str(score_right), 3)
+            score_l = round(quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_LEFT), 2)
+            score_r = round(quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_RIGHT), 2)
+            sum += score_l
+            sum += score_r
+            log("Score for target " + str(i) + ": " + str(score_l) + ", " + str(score_r), 3)
+        average_score = round(sum / (self.num_targets * 2), 2)
+        log("Average score: " + str(average_score), 2)
 
     def update(self):
         super().update()
