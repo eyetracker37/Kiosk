@@ -62,7 +62,7 @@ def get_best_camera(device_list):
     best_device = None
     best_focus = 2.0
 
-    while best_device is None: # Make sure we actually get one
+    while best_device is None:  # Make sure we actually get one
         for device in device_list:
             frame = get_frame(device)
             focus = frame.focus
@@ -213,7 +213,7 @@ def get_frame(device=0):
 def apply_calibration(identifier, calibration):
     func = dll.QLDevice_ApplyCalibration
     device_id = c_int(identifier)
-    calibration_id = c_int(calibration) #call the create or load fuction
+    calibration_id = c_int(calibration)  # call the create or load function
     __display_error(func(device_id, calibration_id))
     return
 
@@ -238,7 +238,7 @@ def calibrate_eye_radius(identifier):
 
 def calibration_load(calibration):
     func = dll.QLCalibration_Load
-    path = "path one", c_char   # Alec look at this it might need to be changed it is the path name created when the calibration is created
+    path = "path one", c_char  # TODO figure out if this matters
     path_pointer = pointer(path)
     calibration_id = c_int(calibration)
     calibration_id_pointer = pointer(calibration_id)
@@ -268,7 +268,7 @@ def calibration_initialize(identifier, calibration_id):
     func = dll.QLCalibration_Initialize
     QL_CALIBRATION_TYPE_5 = c_int(0)
     device_id = c_int(identifier)
-    calibration_type = QL_CALIBRATION_TYPE_5   # Alec we are planning on using the 5 point calibration type which in the program is written QL_CALIBRATION_TYPE_5 but it did not like that so we tried 5 you may need to change this
+    calibration_type = QL_CALIBRATION_TYPE_5
     __display_error(func(device_id, calibration_id, calibration_type))
     return
 
