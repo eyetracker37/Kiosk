@@ -58,18 +58,26 @@ def start(identifier):
     __display_error(func(device_id))
 
 
+def get_best_camera(device_list):
+    best_device = None
+    best_focus = 2.0
+
+    while best_device is None: # Make sure we actually get one
+        for device in device_list:
+            frame = get_frame(device)
+            focus = frame.focus
+            if focus > best_focus:
+                best_device = device
+                best_focus = focus
+    log("Best camera has ID " + str(best_device), 2)
+    return best_device
+
+
 def initialize():
+    global connected_device
+
     log("Getting connected eye trackers", 3)
     device_list = device_enumerate()
-
-    if len(device_list) is 0:
-        log("No eye tracker device found, exiting", 0)
-        sys.exit()
-    elif len(device_list) > 1:
-        log("More than 1 device found", 1)
-
-    global connected_device
-    connected_device = device_list[0]
 
     for device in device_list:
         if get_status(device) is 1:
@@ -79,6 +87,15 @@ def initialize():
             while get_status(device) is not 3:
                 pass
         log(("Device " + str(device) + " started"), 3)
+
+    if len(device_list) is 0:
+        log("No eye tracker device found, exiting", 0)
+        sys.exit()
+    elif len(device_list) > 1:
+        log("More than 1 device found", 1)
+        connected_device = get_best_camera(device_list)
+    else:
+        connected_device = device_list[0]
 
 
 def stop_all():
@@ -177,15 +194,17 @@ class FrameObject:
         self.x_pos = frame_struct.WeightedGazePoint.x
         self.y_pos = frame_struct.WeightedGazePoint.y
         self.is_valid = frame_struct.WeightedGazePoint.Valid
+        self.focus = frame_struct.Focus
 
 
-def get_frame():
-    if connected_device is 0:
-        log("Attempted to get data from unconnected device", 0)
-        return None
+def get_frame(device=0):
+    global connected_device
+
+    if device is 0:
+        device = connected_device
 
     func = dll.QLDevice_GetFrame
-    device_or_group = c_int(connected_device)
+    device_or_group = c_int(device)
     frame_struct = FrameData()
     __display_error(func(device_or_group, c_int(1000), byref(frame_struct)))
     return FrameObject(frame_struct)

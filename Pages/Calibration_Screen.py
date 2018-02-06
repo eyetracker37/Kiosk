@@ -72,7 +72,7 @@ class CalibrationPoint(window_elements.ChildElement):
 
     def get_scoring(self):
         score_sum = 0
-        for i in range(5):
+        for i in range(self.num_targets):
             score_l = round(quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_LEFT), 2)
             score_r = round(quick_link.calibration_get_scoring(self.calibration, i, quick_link.QL_EYE_TYPE_RIGHT), 2)
             score_sum += score_l + score_r
