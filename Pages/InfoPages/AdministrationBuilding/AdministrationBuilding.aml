@@ -6,20 +6,15 @@
 
 <body>
 
-<!-- The building code is CNTR -->
+<!-- The building code is ADMIN -->
 
 <h1>Basic Building Information</h1>
-<p> Location: The heart of the Polytechnic campus & west of the Student Union.
+ Location: The heart of the Polytechnic campus & west of the Academic Center.
 
-    Uses: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
-    Changemaker Central, Student Success Center, & Writing center, along with state-of-the-art moderated classrooms.
-    The University Technology Office & American Indian Student Support Services also occupy offices here.
-
-</p>
-
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
+    Uses: The Administration building houses offices for the Dean of Students, Graduate Student Center,
+    Cashiering Services, International Students and Scholars, Undergraduate Student Government, and Veteran Student Services.
+    Staff can assist you with academic records and transcripts, financial aid, tuition and fee payments,
+    questions on student accounts, transcript requests, new student orientation, registration, and undergraduate admissions.
 
 </body>
 </aml>
