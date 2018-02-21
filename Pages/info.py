@@ -74,28 +74,30 @@ class Page(window_elements.Subwindow):
 
     def update(self):
         super().update()
-        self.cursor = input_handler.get_cursor()
-        if self.cursor.is_valid:
-            deadband = 100
-            min_speed = 5  # Minimum movement speed if moving
-            feathering = 30  # Lower = faster
 
-            # Distance from center
-            y_off = self.cursor.y_pos - config.screen_y / 2
+        if self.offset > config.screen_y:  # Only scroll if necessary
+            self.cursor = input_handler.get_cursor()
+            if self.cursor.is_valid:
+                deadband = 100
+                min_speed = 5  # Minimum movement speed if moving
+                feathering = 30  # Lower = faster
 
-            # Check if x and y are outside the deadband (center) range
-            if y_off > deadband:
-                speed = min_speed + (y_off - deadband) / feathering
-                self.scroll -= speed
-            elif y_off < -deadband:
-                speed = -min_speed + (y_off + deadband) / feathering
-                self.scroll -= speed
+                # Distance from center
+                y_off = self.cursor.y_pos - config.screen_y / 2
 
-            # Make sure map doesn't go off the edge
-            if self.scroll < -self.offset + config.screen_y:
-                self.scroll = -self.offset + config.screen_y
-            elif self.scroll > 0:
-                self.scroll = 0
+                # Check if x and y are outside the deadband (center) range
+                if y_off > deadband:
+                    speed = min_speed + (y_off - deadband) / feathering
+                    self.scroll -= speed
+                elif y_off < -deadband:
+                    speed = -min_speed + (y_off + deadband) / feathering
+                    self.scroll -= speed
+
+                # Make sure map doesn't go off the edge
+                if self.scroll < -self.offset + config.screen_y:
+                    self.scroll = -self.offset + config.screen_y
+                elif self.scroll > 0:
+                    self.scroll = 0
 
 
 class Paragraph(window_elements.Subwindow):
