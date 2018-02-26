@@ -4,6 +4,7 @@ from Utils import config
 from Input import input_handler
 from Elements import window_elements
 from Utils.logger import log
+from Pages import info
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -12,8 +13,9 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 
+# Map background
 class Background(window_elements.ChildElement):
-    priority = 0
+    priority = 0  # Draw on bottom
 
     def __init__(self, window):
         super().__init__(window)
@@ -39,12 +41,14 @@ class Background(window_elements.ChildElement):
         self.cursor = input_handler.get_cursor()
         if self.cursor.is_valid:
             deadband = 100
-            min_speed = 5
-            feathering = 30
+            min_speed = 5  # Minimum movement speed if moving
+            feathering = 30  # Lower = faster
 
+            # Distance from center
             x_off = self.cursor.x_pos - config.screen_x / 2
             y_off = self.cursor.y_pos - config.screen_y / 2
 
+            # Check if x and y are outside the deadband (center) range
             if y_off > deadband:
                 speed = min_speed + (y_off - deadband) / feathering
                 self.y -= speed
@@ -59,6 +63,7 @@ class Background(window_elements.ChildElement):
                 speed = - min_speed + (x_off + deadband) / feathering
                 self.x -= speed
 
+            # Make sure map doesn't go off the edge
             if self.x > self.x_max:
                 self.x = self.x_max
             elif self.x < self.x_min:
@@ -82,11 +87,11 @@ class Background(window_elements.ChildElement):
         return self.off_x, self.off_y
 
 
+# Box element to select buildings
 class InteractionBox(window_elements.ChildElement):
-    priority = 255
+    priority = 255  # Draw on top
 
-    def __init__(self, background, x, y, width, height):
-        self.color = BLACK
+    def __init__(self, background, x, y, width, height, target):
         self.background = background
         parent = background.parent
         super().__init__(parent)
@@ -94,6 +99,9 @@ class InteractionBox(window_elements.ChildElement):
         self.base_y = y
         self.box = pygame.Rect(x, y, width, height)
         self.is_selected = 0
+        self.target = target
+        self.master_window = parent.parent
+        self.parent = parent
 
     def draw(self):
         super().draw()
@@ -101,33 +109,37 @@ class InteractionBox(window_elements.ChildElement):
             pygame.gfxdraw.rectangle(self.screen, self.box, (255, 0, 0, self.is_selected))
 
     def update(self):
+        # Move box with background so it's "stationary"
         self.box.x = self.base_x + self.background.off_x
         self.box.y = self.base_y + self.background.off_y
 
         cursor_x = self.background.cursor.x_pos
         cursor_y = self.background.cursor.y_pos
 
+        # If box is selected
         if self.background.cursor.is_valid \
                 and self.box.collidepoint(cursor_x, cursor_y):
-            self.is_selected += 10
+            # Increase confidence user is actually "clicking" on the box
+            self.is_selected += 3
             if self.is_selected > 255:
                 log("Button pressed", 2)
                 self.is_selected = 0
-        else:
+                self.parent.close()
+                info.run(self.master_window, self.target)
+        else:  # Decrease confidence user is "clicking" on the box
             if self.is_selected > 0:
-                self.is_selected -= 25
+                self.is_selected -= 10
                 if self.is_selected < 0:
                     self.is_selected = 0
 
 
-def run():
+def run(master):
     log("Map window loading", 2)
-    master = window_elements.MasterWindow()
 
     window = window_elements.Subwindow(master)
     master.set_window(window)
     background = Background(window)
-    InteractionBox(background, 837, 837, 135, 119)  # TECH
+    InteractionBox(background, 837, 837, 135, 119, "Century")  # CENTURY
     log("Loaded map window", 3)
 
     window_elements.run_master(master)

@@ -41,8 +41,8 @@ class Rectangle(window_elements.ChildElement):
     def __init__(self, parent_window):
         self.priority = 0
         super().__init__(parent_window)
-        self.x = config.res_width / 2
-        self.y = config.res_height / 2
+        self.x = config.screen_x / 2
+        self.y = config.screen_y / 2
 
     def draw(self):
         super().draw()

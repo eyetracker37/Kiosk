@@ -1,18 +1,14 @@
 from Input import input_handler
 from Pages import map
 from Utils import config
-from Utils.logger import log
-import pygame
-import platform
+from Utils.logger import log_sys_info
+from Elements import window_elements
 
-log("Platform " + platform.platform(), 1)
-log("Processor " + platform.machine(), 1)
-log("Python version " + platform.python_version(), 1)
-log("PyGame version " + pygame.version.ver, 1)
+config.initialize()  # Loads config settings
+log_sys_info()  # Logs information about system for debug purposes
+input_handler.initialize()  # Starts up input handler
 
-config.initialize()
-input_handler.initialize()
+master = window_elements.MasterWindow()
+map.run(master)  # Runs entry point for GUI
 
-map.run()
-
-input_handler.close()
+input_handler.close()  # If map.run() stops, close input handler
