@@ -6,18 +6,22 @@
 
 <body>
 
-<!-- The building code is ADMIN -->
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
 
 <h1>Basic Building Information</h1>
  <p>
     The building code is ADMIN
+
     Location: The heart of the Polytechnic campus & west of the Academic Center.
 
     Uses: The Administration building houses offices for the Dean of Students, Graduate Student Center,
     Cashiering Services, International Students and Scholars, Undergraduate Student Government, and Veteran Student Services.
     Staff can assist you with academic records and transcripts, financial aid, tuition and fee payments,
     questions on student accounts, transcript requests, new student orientation, registration, and undergraduate admissions.
-    <img src="AdminOutside.bmp" alignment="right" scale="1">
+    <img src="AdminBuilding1.bmp" alignment="right" scale="1">
 <p>
 </body>
 </aml>

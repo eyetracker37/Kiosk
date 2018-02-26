@@ -6,20 +6,25 @@
 
 <body>
 
-<!-- The building code is CNTR -->
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
 
 <h1>Basic Building Information</h1>
-<p> Location: The heart of the Polytechnic campus & west of the Student Union.
+ <p>
+    The building code is AGBC
 
-    Uses: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
-    Changemaker Central, Student Success Center, & Writing center, along with state-of-the-art moderated classrooms.
-    The University Technology Office & American Indian Student Support Services also occupy offices here.
+    Location: Towards the South Side of Campus.  Just North of Unity Ave.
 
+    Uses: The Agribusiness Center is a 41,000-square-foot building that houses three wet and dry labs for teaching,
+    19 fully-mediated classrooms, a tiered lecture hall, a tiered classroom, and 120 computer stations,
+    as well as seven large, multipurpose classrooms, including a teaching theatre.
+
+    The Agribusiness Center also features the colorful Main Street, a popular meeting place for students.
+    Main Street is flanked by the PING Swing Analysis Lab, Electronic Market Trading Lab, and the Marketing Research Lab.
+    <img src="AGBC.bmp" alignment="right" scale="1">
 </p>
-
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
 
 </body>
 </aml>
