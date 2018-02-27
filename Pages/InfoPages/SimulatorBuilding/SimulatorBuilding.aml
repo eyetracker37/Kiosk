@@ -6,20 +6,23 @@
 
 <body>
 
-<!-- The building code is CNTR -->
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
-<p> Location: The heart of the Polytechnic campus & west of the Student Union.
+ <p>
+    The building code is
 
-    Uses: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
-    Changemaker Central, Student Success Center, & Writing center, along with state-of-the-art moderated classrooms.
-    The University Technology Office & American Indian Student Support Services also occupy offices here.
+    Location:
 
-</p>
+    Uses:
 
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
+    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+    </p>
 
 </body>
 </aml>

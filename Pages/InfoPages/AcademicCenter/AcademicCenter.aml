@@ -10,6 +10,7 @@
 <!-- We need <head> around the headers and <body> around the body. -->
 <!-- Header pictures need to be called heder.bmp. -->
 <!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
 
 <h1>Basic Building Information</h1>
  <p>
@@ -23,6 +24,6 @@
     <img src="AcademicCenter1.bmp" alignment="right" scale="1">
 
 
-<p>
+</p>
 </body>
 </aml>

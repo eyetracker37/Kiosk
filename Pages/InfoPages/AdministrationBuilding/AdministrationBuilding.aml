@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Administration Building</title>
 </head>
 
 <body>
@@ -22,6 +22,6 @@
     Staff can assist you with academic records and transcripts, financial aid, tuition and fee payments,
     questions on student accounts, transcript requests, new student orientation, registration, and undergraduate admissions.
     <img src="AdminBuilding1.bmp" alignment="right" scale="1">
-<p>
+</p>
 </body>
 </aml>
