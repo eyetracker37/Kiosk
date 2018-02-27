@@ -6,51 +6,23 @@
 
 <body>
 
-<!-- a comment -->
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called heder.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
 
-<h1>My First Heading</h1>
-<p>My first paragraph. It will need to be very long to ensure it reaches the end of the thing. How long is that?
-    Only I know, and I am not telling. So that's a thing I guess. Now I need to handle.
-    <img src="outside.bmp" alignment="right" scale="1">
-    Isn't it exciting? Now to see what happens if I just keep going as I am somewhat wont to do.</p>
+<h1>Basic Building Information</h1>
+ <p>
+    The building code is
 
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p><p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p><p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p><p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
-<p>A new paragraph!</p>
+    Location:
 
-<h1>Another heading!</h1>
+    Uses:
 
-<p>And then some words!</p>
+    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+
+</p>
 
 </body>
 </aml>

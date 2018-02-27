@@ -6,14 +6,24 @@
 
 <body>
 
-<!-- The building code is ADMIN -->
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called heder.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
 
 <h1>Basic Building Information</h1>
- Location: The heart of the Polytechnic campus & west of the Academic Building.
+ <p>
+    The building code is CNTR
 
-    Uses: The Administration building houses offices for the International Students and Scholars,
-    and Veteran Student Services. Staff can assist you with academic records and transcripts, financial aid,
-    new student orientation, registration, and undergraduate admissions.
+    Location: The heart of the Polytechnic campus & west of the Student Union.
+
+    Uses: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
+    Changemaker Central, Student Success Center, & Writing center, along with state-of-the-art moderated classrooms.
+    The University Technology Office & American Indian Student Support Services also occupy offices here.
+    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
 
 
+</p>
+</body>
 </aml>
