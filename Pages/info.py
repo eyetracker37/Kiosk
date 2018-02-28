@@ -42,10 +42,22 @@ def get_image(url, resize=1):
 
 class Page(window_elements.Subwindow):
     priority = 127
-    margins = scale(15)
-    title_size = scale(60)
-    font_size = scale(24)
-    heading_size = scale(30)
+
+    margins = scale(30)
+
+    title_size = scale(120)
+    title_font = "cambria"
+    title_color = (255, 255, 255)
+
+    heading_size = scale(46)
+    heading_font = "opensans"
+
+    _font_size = 38
+    font_size = scale(_font_size)
+    font = "opensans"
+    font_color = (51, 51, 51)
+    font_spacing = scale(_font_size / 4)
+    font_indent = scale(15)
 
     def __init__(self, master):
         super().__init__(master)
@@ -112,6 +124,10 @@ class Paragraph(window_elements.Subwindow):
         self.left_margin = master.left_margin
         self.right_margin = master.right_margin
         self.font_size = master.font_size
+        self.font = master.font
+        self.font_color = master.font_color
+        self.font_spacing = master.font_spacing
+        self.font_indent = master.font_indent
         self.offset = master.offset
         self.last_offset = self.offset
         self.scroll = master.scroll
@@ -170,9 +186,9 @@ class Title(GenericAmlElement):
 
     def __init__(self, master, title, directory):
         super().__init__(master)
-        self.font = pygame.font.SysFont("comicsansms", master.title_size)
+        self.font = pygame.font.SysFont(master.title_font, master.title_size)
         self.title_text = title
-        self.display_text = self.font.render(self.title_text, True, (0, 125, 0))
+        self.display_text = self.font.render(self.title_text, True, master.title_color)
         url = directory + "header.bmp"
         self.img = get_image(url, 1.01)
         self.width = self.img.get_rect().size[0]
@@ -186,15 +202,17 @@ class Title(GenericAmlElement):
 class TextLine(GenericAmlElement):
     def __init__(self, master):
         super().__init__(master)
-        self.font = pygame.font.SysFont("comicsansms", master.font_size)
+        self.left_extra = master.font_indent
+        self.font = pygame.font.SysFont(master.font, master.font_size)
         self.line_text = None
         self.display_text = None
-        dummy_text = self.font.render(' ', True, (0, 0, 0))
+        dummy_text = self.font.render(' ', True, master.font_color)
         self.extra_space = config.screen_x - self.margins * 2 - self.left_margin + self.right_margin
         master.increase_offset(dummy_text.get_height())
+        master.increase_offset(master.font_spacing)
 
     def draw(self):
-        self.screen.blit(self.display_text, (self.margins + self.left_margin, self.offset + self.scroll))
+        self.screen.blit(self.display_text, (self.margins + self.left_margin + self.left_extra, self.offset + self.scroll))
 
     def append_text(self, text):
         text = text.strip()  # Remove newlines and extra spacing
@@ -204,7 +222,7 @@ class TextLine(GenericAmlElement):
 
         i = 1
         while self.font.size(text[:i])[0] < config.screen_x - self.margins * 2 - self.left_margin - self.right_margin\
-                and i < len(text):
+                - self.left_extra and i < len(text):
             i += 1
 
         if i < len(text):
@@ -215,7 +233,7 @@ class TextLine(GenericAmlElement):
         extra_text = text[i:]
 
         self.extra_space = config.screen_x - self.margins * 2 - self.font.size(text[:i])[0]
-        self.display_text = self.font.render(self.line_text, True, (0, 0, 0))
+        self.display_text = self.font.render(self.line_text, True, self.master.font_color)
 
         return extra_text
 
@@ -236,10 +254,12 @@ class TextLine(GenericAmlElement):
 class Heading(GenericAmlElement):
     def __init__(self, master, text):
         super().__init__(master)
+        master.increase_offset(master.margins)
         self.offset = master.go_next_clear()
-        self.font = pygame.font.SysFont("comicsansms", master.heading_size)
+        self.font = pygame.font.SysFont(master.heading_font, master.heading_size)
         self.display_text = self.font.render(text, True, (0, 0, 0))
         master.increase_offset(self.display_text.get_height())
+        master.increase_offset(scale(15))
 
     def draw(self):
         self.screen.blit(self.display_text, (self.margins, self.offset + self.master.scroll))
@@ -409,4 +429,4 @@ def run(master, file):
     parser.load_aml(file)
 
     master.set_window(window)
-    #window_elements.run_master(master)
+    window_elements.run_master(master)

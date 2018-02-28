@@ -12,14 +12,15 @@
 <!-- aml needs the same name as the file. -->
 
 <h1>Basic Building Information</h1>
-<p>
-    The building code is ARAVA
-
-    Location: Towards heart of the Polytechnic campus & south of the Academic Center.
-
-    Uses: The auditorium offers space for large scale performances, movies or lectures.
-    The space can accommodate 423 guests.
+<p>The building code is ARAVA
     <img src="AravaipaAuditorium.bmp" alignment="right" scale="1">
+</p>
+<p>
+    Location: Towards heart of the Polytechnic campus & south of the Academic Center.
+</p>
+<p>
+    Uses: The auditorium offers space for large scale performances, movies or lectures.
+    The space can accommodate 423 guests
 
 </p>
 
