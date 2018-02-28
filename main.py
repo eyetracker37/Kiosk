@@ -12,4 +12,5 @@ master = window_elements.MasterWindow()
 #info.run(master, "AravaipaAuditorium")  # Use this to enter directly to info screen
 map.run(master)  # Runs entry point for GUI
 
+window_elements.run_master(master)
 input_handler.close()  # If map.run() stops, close input handler

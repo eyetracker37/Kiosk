@@ -429,4 +429,3 @@ def run(master, file):
     parser.load_aml(file)
 
     master.set_window(window)
-    window_elements.run_master(master)
