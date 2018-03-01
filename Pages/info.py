@@ -5,6 +5,7 @@ import pygame
 from Input import input_handler
 from Utils import config
 from Utils.scale import scale, get_image
+from Pages import map
 
 # States
 START = "START"
@@ -72,8 +73,9 @@ class Page(window_elements.Subwindow):
     def update(self):
         super().update()
 
+        self.cursor = input_handler.get_cursor()
+
         if self.offset > config.screen_y:  # Only scroll if necessary
-            self.cursor = input_handler.get_cursor()
             if self.cursor.is_valid:
                 deadband = 100
                 min_speed = 5  # Minimum movement speed if moving
@@ -136,7 +138,7 @@ class Paragraph(window_elements.Subwindow):
         self.master.next_clear = next
 
     def close(self):
-        self.master.unregister()
+        self.master.unregister(self)
 
     def update(self):
         super().update()
@@ -163,7 +165,7 @@ class GenericAmlElement:
         self.scroll = self.master.scroll
 
     def close(self):
-        self.master.unregister()
+        self.master.unregister(self)
 
 
 class Title(GenericAmlElement):
@@ -250,6 +252,62 @@ class Heading(GenericAmlElement):
         self.screen.blit(self.display_text, (self.margins, self.offset + self.master.scroll))
 
 
+class Footer(GenericAmlElement):
+    def __init__(self, master):
+        super().__init__(master)
+        url = "Resources/home.bmp"
+        self.img = get_image(url, 0.75)
+        self.img_width = self.img.get_rect().size[0]
+        self.img_height = self.img.get_rect().size[1]
+        master.go_next_clear()
+        master.increase_offset(master.margins*3)
+        self.offset = master.offset
+
+        self.circle_radius = int(self.master.margins + self.img_width/2)
+
+        self.base_x = int((config.screen_x-self.img_width)/2 - self.master.margins)
+        self.base_y = int(self.offset + self.img_height/2 + self.circle_radius)
+        self.collider_box = pygame.Rect(self.base_x, self.base_y, self.circle_radius * 2, self.circle_radius * 2)
+        self.is_selected = 0
+
+    def draw(self):
+        self.screen.blit(self.img, ((config.screen_x-self.img_width)/2, self.scroll + self.offset))
+
+        line_y = int(self.scroll + self.offset + self.img_height/2)
+
+        pygame.draw.line(self.screen, self.master.font_color, (self.master.margins, line_y),
+                         ((config.screen_x-self.img_width)/2 - self.master.margins, line_y), 2)
+        pygame.draw.line(self.screen, self.master.font_color, (config.screen_x - self.master.margins, line_y),
+                         ((config.screen_x + self.img_width) / 2 + self.master.margins, line_y), 2)
+        try:
+            pygame.draw.circle(self.screen, (55, 55, 55), (int(config.screen_x/2), line_y), int(self.circle_radius / 255 * self.is_selected), 2)
+        except ValueError:
+            pass
+
+    def update(self):
+        super().update()
+        self.collider_box.y = int(self.scroll + self.offset + self.img_height/2 - self.circle_radius)
+
+        cursor_x = self.master.cursor.x_pos
+        cursor_y = self.master.cursor.y_pos
+
+        # If box is selected
+        if self.master.cursor.is_valid \
+                and self.collider_box.collidepoint(cursor_x, cursor_y):
+            # Increase confidence user is actually "clicking" on the box
+            self.is_selected += 3
+            if self.is_selected > 255:
+                log("Button pressed to return home", 2)
+                self.is_selected = 0
+                self.master.close()
+                map.run(self.master.parent.parent)
+        else:  # Decrease confidence user is "clicking" on the box
+            if self.is_selected > 0:
+                self.is_selected -= 10
+                if self.is_selected < 0:
+                    self.is_selected = 0
+
+
 class Image(GenericAmlElement):
     def __init__(self, master, alignment, url, resize):
         super().__init__(master)
@@ -281,6 +339,7 @@ class AMLParser(HTMLParser):
         self.current_paragraph = None
         self.current_line = None
         self.title = None
+        self.footer = None
         self.directory = None
         self.base_offset = 0
 
@@ -295,7 +354,11 @@ class AMLParser(HTMLParser):
             return False
         for line in doc:
             self.feed(line)
+        self.create_footer()
         return self.close_state_machine()
+
+    def create_footer(self):
+        self.footer = Footer(self.page)
 
     def create_title(self, title):
         self.title = Title(self.page, title, self.directory)

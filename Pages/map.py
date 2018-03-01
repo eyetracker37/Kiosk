@@ -142,7 +142,9 @@ def run(master):
     log("Map window loading", 2)
 
     window = window_elements.Subwindow(master)
+    log("Created map subwindow", 3)
     master.set_window(window)
+    log("Window set to map", 3)
     background = Background(window)
     InteractionBox(background, 837, 837, 135, 119, "TechnologyCenter")  # CENTURY
     log("Loaded map window", 3)
