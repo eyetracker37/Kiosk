@@ -146,5 +146,10 @@ def run(master):
     master.set_window(window)
     log("Window set to map", 3)
     background = Background(window)
-    InteractionBox(background, 837, 837, 135, 119, "TechnologyCenter")  # CENTURY
+
+    #  X Y Width Height
+    InteractionBox(background, 837, 837, 135, 119, "TechnologyCenter")
+    InteractionBox(background, 1120, 694, 123, 109, "AravaipaAuditorium")
+    InteractionBox(background, 1023, 874, 62, 40, "EngineeringStudio")
+
     log("Loaded map window", 3)
