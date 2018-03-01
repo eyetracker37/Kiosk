@@ -56,6 +56,7 @@ class MasterWindow:
 
     # Set which window is being displayed
     def set_window(self, window):
+        log("Changed active window to " + str(window), 3)
         self.current_window = window
 
     # Kill update thread
@@ -140,12 +141,12 @@ class Subwindow:
     def unregister(self, child):
         if child in self.child_list:
             self.child_list.remove(child)
-            log("Unregistered", 3)
+            log("Unregistered " + str(child), 3)
 
     def close(self):
         log("Closing window", 3)
         for child in self.child_list:
-            log("Closing instance", 3)
+            log("Closing instance " + str(child), 3)
             child.close()
 
 
