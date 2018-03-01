@@ -4,6 +4,7 @@ from Utils.logger import log
 import pygame
 from Input import input_handler
 from Utils import config
+from Utils.scale import scale, get_image
 
 # States
 START = "START"
@@ -24,28 +25,12 @@ LEFT = "left"
 RIGHT = "right"
 
 
-def scale(value):
-    return int(value * config.scale_factor)
-
-
-def get_image(url, resize=1):
-    try:
-        raw = pygame.image.load(url)
-    except pygame.error:
-        log(url + " does not exist", 0)
-        return None
-    width = scale(raw.get_rect().size[0] * resize)
-    height = scale(raw.get_rect().size[1] * resize)
-    scaled_image = pygame.transform.scale(raw, (width, height))
-    return scaled_image
-
-
 class Page(window_elements.Subwindow):
     priority = 127
 
     margins = scale(30)
 
-    title_size = scale(120)
+    title_size = scale(160)
     title_font = "cambria"
     title_color = (255, 255, 255)
 
