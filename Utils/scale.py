@@ -13,7 +13,7 @@ def get_image(url, resize=1):
     except pygame.error:
         log(url + " does not exist", 0)
         return None
-    width = scale(raw.get_rect().size[0] * resize)
-    height = scale(raw.get_rect().size[1] * resize)
+    width = scale(raw.get_rect().size[0], resize)
+    height = scale(raw.get_rect().size[1], resize)
     scaled_image = pygame.transform.scale(raw, (width, height))
     return scaled_image
