@@ -56,6 +56,7 @@ class Page(window_elements.Subwindow):
         self.next_clear = 0
 
     def increase_offset(self, increase):
+        print("Increased " + str(increase))
         if self.offset >= self.next_clear:
             self.next_clear += increase
             self.left_margin = 0
@@ -269,6 +270,8 @@ class Footer(GenericAmlElement):
         self.base_y = int(self.offset + self.img_height/2 + self.circle_radius)
         self.collider_box = pygame.Rect(self.base_x, self.base_y, self.circle_radius * 2, self.circle_radius * 2)
         self.is_selected = 0
+
+        master.increase_offset(self.circle_radius * 2)
 
     def draw(self):
         self.screen.blit(self.img, ((config.screen_x-self.img_width)/2, self.scroll + self.offset))
