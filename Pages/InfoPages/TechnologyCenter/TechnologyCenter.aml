@@ -1,0 +1,28 @@
+<aml>
+
+<head>
+<title>Technology Center</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+<h1>Basic Building Information</h1>
+ <p>
+    The building code is
+
+    Location:
+
+    Uses:
+
+    <img src="TechOutside.bmp" alignment="right" scale="1">
+ </p>
+
+</body>
+</aml>

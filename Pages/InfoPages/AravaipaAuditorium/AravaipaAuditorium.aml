@@ -1,0 +1,28 @@
+<aml>
+
+<head>
+<title>Aravaipa Auditorium</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+
+<h1>Basic Building Information</h1>
+<p>The building code is ARAVA
+    <img src="AravaipaAuditorium.bmp" alignment="right" scale="1">
+</p>
+<p>
+    Location: Towards heart of the Polytechnic campus & south of the Academic Center.
+</p>
+<p>
+    Uses: The auditorium offers space for large scale performances, movies or lectures.
+    The space can accommodate 423 guests
+
+</p>
+
+</body>
+</aml>
