@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Palo Blanco Hall</title>
 </head>
 
 <body>
@@ -15,19 +15,18 @@
 
 <h1>Basic Building Information</h1>
  <p>
-    The building code is
+    The building code is PALOB
 
-    Location:
+    Location: Just south of the Student Union.
 
-    Uses:
-
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+   Uses/Features: Freshmen in the Mary Lou Fulton Teachers College, W. P. Carey School of Business, and College of
+   Letters and Sciences reside in Palo Blanco Hall.  The design of the hall and community barbecue area in the middle
+   courtyard encourage students to socialize. Students have access to a community lounge and computer lab, as well as
+   laundry facilities. Every residence hall room is equipped with a high-speed Ethernet connection, local phone service
+   and an 80-channel cable TV connection.
+    <img src="PaloBlanco.bmp" alignment="right" scale="1">
 
 </p>
-
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
 
 </body>
 </aml>

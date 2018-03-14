@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Academic Center</title>
 </head>
 
 <body>
@@ -11,6 +11,7 @@
 <!-- Header pictures need to be called heder.bmp. -->
 <!-- aml needs the same name as the file. -->
 <!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
  <p>
@@ -18,11 +19,10 @@
 
     Location: The heart of the Polytechnic campus & west of the Student Union.
 
-    Uses: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
+    Uses/Features: The building houses the campus Library, Barrett Honors College, Computing Commons, Career Preparation Center,
     Changemaker Central, Student Success Center, & Writing center, along with state-of-the-art moderated classrooms.
     The University Technology Office & American Indian Student Support Services also occupy offices here.
     <img src="AcademicCenter1.bmp" alignment="right" scale="1">
-
 
 </p>
 </body>

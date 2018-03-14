@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Technology Center</title>
 </head>
 
 <body>
@@ -15,14 +15,21 @@
 
 <h1>Basic Building Information</h1>
  <p>
-    The building code is
+    The building code is TECH
 
-    Location:
+    Location: South of the roundabout.  On the west side of Innovation Way.
 
-    Uses:
+   Uses/Features: The labs provide students access to print & imaging technologies, like digital printing presses,
+   multimedia & animation technology, web development tools, & pre & post-press equipment. The Graphic Information
+   Technology Commercial Photography Studio is a working professional photographic studio outfitted with digital cameras
+   & lighting equipment. Also part of the studio, the Technical Imaging Lab is available for high-speed photography &
+   video, stroboscopic & thermal imaging, & event observation. A new conceptual prototyping & collaboration space, the
+   Startup Labs, is a collaborative space for conceptual design & ideation. Constructed with walls made of dry erase
+   boards & bright, comfortable furniture, Startup Labs is an innovation commons. Students also have access to
+   alternative energy technologies—like solar, hydrogen & fuel cells— & environmental management & electronics labs.
+    <img src="Tech1.bmp" alignment="right" scale="1">
 
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
- </p>
+</p>
 
 </body>
 </aml>
