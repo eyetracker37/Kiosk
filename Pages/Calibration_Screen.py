@@ -82,6 +82,9 @@ class CalibrationPoint(window_elements.ChildElement):
     def apply(self):
         quick_link.calibration_finalize(self.calibration)
         quick_link.apply_calibration(self.calibration)
+        log("Calibration complete", 2)
+        self.parent.close()
+        map.run(self.parent.parent)
 
     def update(self):
         super().update()
