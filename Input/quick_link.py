@@ -213,8 +213,7 @@ def get_frame(device=0):
 def apply_calibration(calibration):
     func = dll.QLDevice_ApplyCalibration
     device_id = c_int(connected_device)
-    calibration_id = c_int(calibration)  # call the create or load function
-    __display_error(func(device_id, calibration_id))
+    __display_error(func(device_id, calibration))
     return
 
 
@@ -323,8 +322,7 @@ def calibration_get_status(calibration, target):
 
 def calibration_finalize(calibration):
     func = dll.QLCalibration_Finalize
-    calibration_id = c_int(calibration)
-    __display_error(func(calibration_id,))
+    __display_error(func(calibration,))
     return
 
 
