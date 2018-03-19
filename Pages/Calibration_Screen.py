@@ -6,6 +6,7 @@ from Elements import window_elements
 from Utils.logger import log
 from enum import Enum
 from Input import quick_link
+from Pages import map
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

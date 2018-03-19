@@ -12,7 +12,7 @@ input_handler.initialize()  # Starts up input handler
 master = window_elements.MasterWindow()
 
 if config.use_tracker:
-    Calibration_Screen.run()
+    Calibration_Screen.run(master)
 else:
     #info.run(master, "AravaipaAuditorium")  # Use this to enter directly to info screen
     map.run(master)  # Runs entry point for GUI
