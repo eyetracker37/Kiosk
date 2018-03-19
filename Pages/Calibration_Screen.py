@@ -138,11 +138,11 @@ class CalibrationPoint(window_elements.ChildElement):
         pygame.draw.circle(self.screen, self.color, [int(self.x), int(self.y)], self.size)
 
 
-def run():
-    log("Calibration loading", 2)
-    master = window_elements.MasterWindow()
+def run(master):
+    log("Calibration starting", 2)
     window = window_elements.Subwindow(master)
     master.set_window(window)
+    log("Window set to calibration", 3)
 
     log("Creating calibration file", 3)
     calibration = quick_link.calibration_create()
@@ -154,5 +154,3 @@ def run():
     CalibrationPoint(window, calibration)
     Background(window)
     log("Loaded calibration window", 3)
-
-    window_elements.run_master(master)
