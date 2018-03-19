@@ -210,9 +210,9 @@ def get_frame(device=0):
     return FrameObject(frame_struct)
 
 
-def apply_calibration(identifier, calibration):
+def apply_calibration(calibration):
     func = dll.QLDevice_ApplyCalibration
-    device_id = c_int(identifier)
+    device_id = c_int(connected_device)
     calibration_id = c_int(calibration)  # call the create or load function
     __display_error(func(device_id, calibration_id))
     return

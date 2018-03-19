@@ -79,8 +79,9 @@ class CalibrationPoint(window_elements.ChildElement):
         average_score = round(score_sum / (self.num_targets * 2), 2)
         log("Average score: " + str(average_score), 2)
 
-    def save(self):
-        quick_link.calibration_save(self.calibration)
+    def apply(self):
+        quick_link.calibration_finalize(self.calibration)
+        quick_link.apply_calibration(self.calibration)
 
     def update(self):
         super().update()
@@ -116,7 +117,7 @@ class CalibrationPoint(window_elements.ChildElement):
                 self.state = States.DONE
                 log("Calibration done", 1)
                 self.get_scoring()
-                self.save()
+                self.apply()
         elif self.state == States.DONE:
             pass
         elif self.state == States.GROWING:
