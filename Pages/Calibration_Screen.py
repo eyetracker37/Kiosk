@@ -5,7 +5,6 @@ from math import sqrt
 from Elements import window_elements
 from Utils.logger import log
 from enum import Enum
-from random import randint
 from Input import quick_link
 
 BLACK = (0, 0, 0)
@@ -80,6 +79,9 @@ class CalibrationPoint(window_elements.ChildElement):
         average_score = round(score_sum / (self.num_targets * 2), 2)
         log("Average score: " + str(average_score), 2)
 
+    def save(self):
+        quick_link.calibration_save(self.calibration)
+
     def update(self):
         super().update()
         if self.state == States.GOING_TO_TARGET:
@@ -114,6 +116,7 @@ class CalibrationPoint(window_elements.ChildElement):
                 self.state = States.DONE
                 log("Calibration done", 1)
                 self.get_scoring()
+                self.save()
         elif self.state == States.DONE:
             pass
         elif self.state == States.GROWING:
