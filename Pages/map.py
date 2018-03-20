@@ -5,6 +5,7 @@ from Input import input_handler
 from Elements import window_elements
 from Utils.logger import log
 from Pages import info
+from Utils.scale import get_image, scale
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -12,14 +13,17 @@ BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
+SCALE_FACTOR = 2
+
 
 # Map background
 class Background(window_elements.ChildElement):
     priority = 0  # Draw on bottom
 
     def __init__(self, window):
+        global SCALE_FACTOR
         super().__init__(window)
-        self.image = pygame.image.load("Resources/asu_poly_map.bmp")
+        self.image = get_image("Resources/asu_poly_map.bmp", SCALE_FACTOR)
         self.imagerect = self.image.get_rect()
         self.width = self.imagerect.width
         self.height = self.imagerect.height
@@ -40,13 +44,13 @@ class Background(window_elements.ChildElement):
     def update(self):
         self.cursor = input_handler.get_cursor()
         if self.cursor.is_valid:
-            deadband = 100
-            min_speed = 5  # Minimum movement speed if moving
-            feathering = 30  # Lower = faster
+            deadband = scale(100)
+            min_speed = scale(5)  # Minimum movement speed if moving
+            feathering = scale(30)  # Lower = faster
 
             # Distance from center
-            x_off = self.cursor.x_pos - config.screen_x / 2
-            y_off = self.cursor.y_pos - config.screen_y / 2
+            x_off = scale(self.cursor.x_pos - config.screen_x / 2)
+            y_off = scale(self.cursor.y_pos - config.screen_y / 2)
 
             # Check if x and y are outside the deadband (center) range
             if y_off > deadband:
@@ -92,12 +96,13 @@ class InteractionBox(window_elements.ChildElement):
     priority = 255  # Draw on top
 
     def __init__(self, background, x, y, width, height, target):
+        global SCALE_FACTOR
         self.background = background
         parent = background.parent
         super().__init__(parent)
-        self.base_x = x
-        self.base_y = y
-        self.box = pygame.Rect(x, y, width, height)
+        self.base_x = scale(x, SCALE_FACTOR)
+        self.base_y = scale(y, SCALE_FACTOR)
+        self.box = pygame.Rect(self.base_x, self.base_y, scale(width, SCALE_FACTOR), scale(height, SCALE_FACTOR))
         self.is_selected = 0
         self.target = target
         self.master_window = parent.parent
@@ -137,9 +142,14 @@ def run(master):
     log("Map window loading", 2)
 
     window = window_elements.Subwindow(master)
+    log("Created map subwindow", 3)
     master.set_window(window)
+    log("Window set to map", 3)
     background = Background(window)
-    InteractionBox(background, 837, 837, 135, 119, "AgribusinessCenter")  # CENTURY
-    log("Loaded map window", 3)
 
-    window_elements.run_master(master)
+    #  X Y Width Height
+    InteractionBox(background, 837, 837, 135, 119, "TechnologyCenter")
+    InteractionBox(background, 1120, 694, 123, 109, "AravaipaAuditorium")
+    InteractionBox(background, 1023, 874, 62, 40, "EngineeringStudio")
+
+    log("Loaded map window", 3)
