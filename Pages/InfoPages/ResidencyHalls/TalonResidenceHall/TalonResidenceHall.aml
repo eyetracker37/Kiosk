@@ -14,16 +14,17 @@
 <!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
- <p>
-    The building code is TALON
-
+ <p>The building code is TALON
+    <img src="Talon1.bmp" alignment="right" scale="1">
+</p>
+<p>
     Location: On the North end of campus east of the Simulation Building.
-
+</p>
+<p>
    Uses/Features: Talon Hall offers double-occupancy suites. Each suite consists of two bedrooms connected by a kitchen
    equipped with two small refrigerators, a sink and a microwave. Amenities include laundry facilities, a study lounge,
    and a community lounge. Every residence hall room is equipped with a high-speed Ethernet connection, local phone
    service and cable TV connection.
-    <img src="Talon.bmp" alignment="right" scale="1">
 
 </p>
 
