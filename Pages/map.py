@@ -151,10 +151,8 @@ def run(master):
     InteractionBox(background, , , ,"AcademicCenter")
     InteractionBox(background,967,535,109,101,"AdministraionBuilding")
     InteractionBox(background,1081,855,154,129,"AgribusinessCenter")
-    InteractionBox(background, 1120, 694, 123, 109, "AravaipaAuditorium")
     InteractionBox(background,1087,517,150,131,"Century Hall")
     InteractionBox(background,,, , "CitrusDiningPavillion")
-    InteractionBox(background, 1023, 874, 62, 40, "EngineeringStudio")
     InteractionBox(background,,, , "FacultiesManagementPoliceDepartment")
     InteractionBox(background,970,739,146,79,"PeraltaHall")
     InteractionBox(background,969,683,87,54,"PicachoHall")
@@ -166,7 +164,6 @@ def run(master):
     InteractionBox(background,1266,519,148,112,"StudentUnion")
     InteractionBox(background,,, , "SunDevilFitnessComplexPolytech")
     InteractionBox(background,1259,682,111,61,"SuttonHall")
-    InteractionBox(background, 837, 837, 135,119, "TechnologyCenter")
     InteractionBox(background,1259,750,113,67,"WannerHall")
 
 
