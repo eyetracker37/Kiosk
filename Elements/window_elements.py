@@ -1,9 +1,9 @@
 from Utils.logger import log
 import pygame
+import sys
 from pygame.locals import *
 from Utils import thread_manager
 import threading
-from time import sleep
 from Utils import config
 
 
@@ -15,62 +15,91 @@ class UpdateThread(threading.Thread):
         self.creator = creator
 
     def kill(self):
-        self.is_running = False
+        thread_manager.running = False
 
     def run(self):
         log("Starting screen update thread", 2)
-        self.is_running = True
-        while self.is_running:
-
+        while thread_manager.running:
                 try:
                     self.creator.update()
                 except AttributeError:
                     pass
 
 
+# Master window handler, responsible for managing the screen
 class MasterWindow:
     current_window = None
     previous_window = None
 
     def __init__(self):
+
+        # Creates the screen
         pygame.init()
         size = [config.screen_x, config.screen_y]
+        got_resolution_x = pygame.display.Info().current_w
+        got_resolution_y = pygame.display.Info().current_h
+        log("Attempting to start screen of size " + str(size) +
+            " on monitor of size [" + str(got_resolution_x) + ", " + str(got_resolution_y) + "]", 2)
+        if size[0] > got_resolution_x or size[1] > got_resolution_y:
+            log("Screen resolution [" + str(got_resolution_x) + ", " + str(got_resolution_y) +
+                "] too small to fit requested resolution " + str(size) + ", exiting", 0)
+            self.kill_threads()
+            sys.exit()
+
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-
-        self.done = False
-
         log("Master screen started", 2)
+
+        # Creates and starts the update thread
         self.update_thread = UpdateThread(self)
         self.update_thread.start()
+        self.last_tick = pygame.time.get_ticks()
 
+    # Set which window is being displayed
     def set_window(self, window):
+        log("Changed active window to " + str(window), 3)
         self.current_window = window
 
+    # Kill update thread
     def kill_threads(self):
         log("Killing threads", 2)
-        self.update_thread.kill()
+        try:
+            self.update_thread.kill()
+        except AttributeError:
+            pass
         pygame.quit()
-        self.done = True
+        thread_manager.running = False
 
+    # Draws the elements on the screen
     def draw(self):
+
+        # Handling for keyboard presses has to be in draw task, since it can't be in a thread
+        # and must instead be in the master task
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                log("Received quit signal", 2)
                 self.kill_threads()
             elif event.type == pygame.KEYDOWN:
                 if event.key == K_q:
+                    log("Q pressed", 2)
                     self.kill_threads()
             else:
                 pass
         self.current_window.draw()
+        pygame.display.flip()
 
+    # Updates the elements on the screen, but does not actually draw them
     def update(self):
-        with thread_manager.screen_lock:
-            self.current_window.update()
-        thread_manager.clock.tick(60)  # TODO make this a more accurate clock
+        update_time = 1000 / 60  # 1000 ms / 60 FPS
+        time_current = pygame.time.get_ticks()
+        if time_current - self.last_tick > update_time:
+            self.last_tick += update_time
+            with thread_manager.screen_lock:
+                self.current_window.update()
 
 
+# Function will run until program is told to exit, drawing the screen
 def run_master(master):
-    while not master.done:
+    while thread_manager.running:
         with thread_manager.screen_lock:
             try:
                 master.draw()
@@ -81,11 +110,13 @@ def run_master(master):
     log("Master screen closed", 1)
 
 
+# Template for window being displayed by the master window
 class Subwindow:
-    child_list = []
 
     def __init__(self, master):
+        self.parent = master
         self.screen = master.screen
+        self.child_list = []  # All of the elements on the screen
         pass
 
     def update(self):
@@ -95,8 +126,8 @@ class Subwindow:
     def draw(self):
         for child in self.child_list:
             child.draw()
-        pygame.display.flip()
 
+    # Register as a child of the Subwindow to be added to the update/draw list
     def register(self, child):
         priority = child.priority
         for idx, entry in enumerate(self.child_list):
@@ -105,13 +136,22 @@ class Subwindow:
                 return
         self.child_list.append(child)
 
+    # Remove child element from the update/draw list
     def unregister(self, child):
         if child in self.child_list:
             self.child_list.remove(child)
+            log("Unregistered " + str(child), 3)
+
+    def close(self):
+        log("Closing window", 3)
+        for child in self.child_list:
+            log("Closing instance " + str(child), 3)
+            child.close()
 
 
+# Template for elements on the screen
 class ChildElement:
-    priority = 127
+    priority = 127  # This can be overridden to change draw order, higher = on top
 
     def __init__(self, parent_window):
         self.parent = parent_window

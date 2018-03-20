@@ -1,18 +1,21 @@
 from Input import input_handler
-from Pages import map
+from Pages import map, info
+from Pages import Calibration_Screen
 from Utils import config
-from Utils.logger import log
-import pygame
-import platform
+from Utils.logger import log_sys_info
+from Elements import window_elements
 
-log("Platform " + platform.platform(), 1)
-log("Processor " + platform.machine(), 1)
-log("Python version " + platform.python_version(), 1)
-log("PyGame version " + pygame.version.ver, 1)
+config.initialize()  # Loads config settings
+log_sys_info()  # Logs information about system for debug purposes
+input_handler.initialize()  # Starts up input handler
 
-config.initialize()
-input_handler.initialize()
+master = window_elements.MasterWindow()
 
-map.run()
+if config.use_tracker:
+    Calibration_Screen.run(master)
+else:
+    info.run(master, "AravaipaAuditorium")  # Use this to enter directly to info screen
+    #map.run(master)  # Runs entry point for GUI
 
-input_handler.close()
+window_elements.run_master(master)
+input_handler.close()  # If master stops, close input handler

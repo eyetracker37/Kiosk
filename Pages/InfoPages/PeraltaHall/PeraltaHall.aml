@@ -1,0 +1,31 @@
+<aml>
+
+<head>
+<title>Academic Complex</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called heder.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+
+<h1>Basic Building Information</h1>
+ <p>
+    The building code is
+
+    Location:
+
+    Uses:
+
+    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+</p>
+
+<h1>Another heading!</h1>
+
+<p>And then some words!</p>
+
+</body>
+</aml>
