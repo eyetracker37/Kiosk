@@ -26,8 +26,51 @@ class UpdateThread(threading.Thread):
                     pass
 
 
+class HierarchyObject:
+    def __init__(self, parent):
+        self.parent = parent
+        self.parent.register(self)
+        self.master = parent.get_master()
+        self.window = parent.get_window()
+        self.screen = self.master.screen
+        self.child_list = []  # All of the elements on the screen
+
+    def get_master(self):
+        return self.master
+
+    def get_window(self):
+        return self.window
+
+    # Register as a child of the Subwindow to be added to the update/draw list
+    def register(self, child):
+        priority = child.priority
+        for idx, entry in enumerate(self.child_list):
+            if entry.priority >= priority:
+                self.child_list.insert(idx, child)
+                return
+        self.child_list.append(child)
+
+    # Remove child element from the update/draw list
+    def unregister(self, child):
+        if child in self.child_list:
+            self.child_list.remove(child)
+
+    def close(self):
+        for child in self.child_list:
+            child.close()
+        self.parent.unregister(self)
+
+    def update(self):
+        for child in self.child_list:
+            child.update()
+
+    def draw(self):
+        for child in self.child_list:
+            child.draw()
+
+
 # Master window handler, responsible for managing the screen
-class MasterWindow:
+class WindowManager:
     current_window = None
     previous_window = None
 
@@ -55,9 +98,14 @@ class MasterWindow:
         self.last_tick = pygame.time.get_ticks()
 
     # Set which window is being displayed
-    def set_window(self, window):
+    def register(self, window):
+        if self.current_window is not None:
+            self.current_window.close()
         log("Changed active window to " + str(window), 3)
         self.current_window = window
+
+    def unregister(self, window):
+        pass
 
     # Kill update thread
     def kill_threads(self):
@@ -96,6 +144,12 @@ class MasterWindow:
             with thread_manager.screen_lock:
                 self.current_window.update()
 
+    def get_master(self):
+        return self
+
+    def get_window(self):
+        return self.current_window
+
 
 # Function will run until program is told to exit, drawing the screen
 def run_master(master):
@@ -108,61 +162,3 @@ def run_master(master):
         thread_manager.clock.tick(60)
 
     log("Master screen closed", 1)
-
-
-# Template for window being displayed by the master window
-class Subwindow:
-
-    def __init__(self, master):
-        self.parent = master
-        self.screen = master.screen
-        self.child_list = []  # All of the elements on the screen
-        pass
-
-    def update(self):
-        for child in self.child_list:
-            child.update()
-
-    def draw(self):
-        for child in self.child_list:
-            child.draw()
-
-    # Register as a child of the Subwindow to be added to the update/draw list
-    def register(self, child):
-        priority = child.priority
-        for idx, entry in enumerate(self.child_list):
-            if entry.priority >= priority:
-                self.child_list.insert(idx, child)
-                return
-        self.child_list.append(child)
-
-    # Remove child element from the update/draw list
-    def unregister(self, child):
-        if child in self.child_list:
-            self.child_list.remove(child)
-            log("Unregistered " + str(child), 3)
-
-    def close(self):
-        log("Closing window", 3)
-        for child in self.child_list:
-            log("Closing instance " + str(child), 3)
-            child.close()
-
-
-# Template for elements on the screen
-class ChildElement:
-    priority = 127  # This can be overridden to change draw order, higher = on top
-
-    def __init__(self, parent_window):
-        self.parent = parent_window
-        self.screen = parent_window.screen
-        parent_window.register(self)
-
-    def close(self):
-        self.parent.unregister(self)
-
-    def update(self):
-        pass
-
-    def draw(self):
-        pass

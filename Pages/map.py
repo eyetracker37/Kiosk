@@ -17,7 +17,7 @@ SCALE_FACTOR = 2
 
 
 # Map background
-class Background(window_elements.ChildElement):
+class Background(window_elements.HierarchyObject):
     priority = 0  # Draw on bottom
 
     def __init__(self, window):
@@ -42,6 +42,7 @@ class Background(window_elements.ChildElement):
         self.cursor = input_handler.get_cursor()
 
     def update(self):
+        super().update()
         self.cursor = input_handler.get_cursor()
         if self.cursor.is_valid:
             deadband = scale(100)
@@ -84,33 +85,31 @@ class Background(window_elements.ChildElement):
         self.imagerect.center = (self.x, self.y)
 
     def draw(self):
-        super().draw()
         self.screen.blit(self.image, self.imagerect)
+        super().draw()
 
     def get_offset(self):
         return self.off_x, self.off_y
 
 
 # Box element to select buildings
-class InteractionBox(window_elements.ChildElement):
+class InteractionBox(window_elements.HierarchyObject):
     priority = 255  # Draw on top
 
     def __init__(self, background, x, y, width, height, target):
         global SCALE_FACTOR
         self.background = background
-        parent = background.parent
-        super().__init__(parent)
+        super().__init__(background)
         self.base_x = scale(x, SCALE_FACTOR)
         self.base_y = scale(y, SCALE_FACTOR)
         self.box = pygame.Rect(self.base_x, self.base_y, scale(width, SCALE_FACTOR), scale(height, SCALE_FACTOR))
         self.is_selected = 0
         self.target = target
-        self.master_window = parent.parent
-        self.parent = parent
 
     def draw(self):
         super().draw()
         if self.is_selected:
+            print(self.is_selected)
             pygame.gfxdraw.rectangle(self.screen, self.box, (255, 0, 0, self.is_selected))
 
     def update(self):
@@ -130,7 +129,7 @@ class InteractionBox(window_elements.ChildElement):
                 log("Button pressed", 2)
                 self.is_selected = 0
                 self.parent.close()
-                info.run(self.master_window, self.target)
+                info.run(self.master, self.target)
         else:  # Decrease confidence user is "clicking" on the box
             if self.is_selected > 0:
                 self.is_selected -= 10
@@ -141,9 +140,7 @@ class InteractionBox(window_elements.ChildElement):
 def run(master):
     log("Map window loading", 2)
 
-    window = window_elements.Subwindow(master)
-    log("Created map subwindow", 3)
-    master.set_window(window)
+    window = window_elements.HierarchyObject(master)
     log("Window set to map", 3)
     background = Background(window)
 

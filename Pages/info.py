@@ -192,9 +192,7 @@ class AMLParser(HTMLParser):
 
 
 def run(master, file):
-    window = window_elements.Subwindow(master)  # Window AML parser will draw on
+    window = window_elements.HierarchyObject(master)  # Window AML parser will draw on
     parser = AMLParser(window)  # Create instance of parser to parse text
 
     parser.load_aml(file)  # Load and parse the target file
-
-    master.set_window(window)  # Take over the display

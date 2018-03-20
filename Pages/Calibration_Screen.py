@@ -25,17 +25,17 @@ class States(Enum):
 
 
 # Map background
-class Background(window_elements.ChildElement):
+class Background(window_elements.HierarchyObject):
     priority = 0  # Draw on bottom
 
     def draw(self):
-        super().draw()
         self.screen.fill(BLUE)
+        super().draw()
 
 
-class CalibrationPoint(window_elements.ChildElement):
-    def __init__(self, parent_window, calibration):
-        super().__init__(parent_window)
+class CalibrationPoint(window_elements.HierarchyObject):
+    def __init__(self, parent, calibration):
+        super().__init__(parent)
         self.current_target = None
         self.calibration = calibration
         self.targets = quick_link.calibration_get_targets(calibration)
@@ -84,8 +84,7 @@ class CalibrationPoint(window_elements.ChildElement):
         quick_link.calibration_finalize(self.calibration)
         quick_link.apply_calibration(self.calibration)
         log("Calibration complete", 2)
-        self.parent.close()
-        map.run(self.parent.parent)
+        map.run(self.master)
 
     def update(self):
         super().update()
@@ -144,9 +143,7 @@ class CalibrationPoint(window_elements.ChildElement):
 
 def run(master):
     log("Calibration starting", 2)
-    window = window_elements.Subwindow(master)
-    master.set_window(window)
-    log("Window set to calibration", 3)
+    window = window_elements.Window(master)
 
     log("Creating calibration file", 3)
     calibration = quick_link.calibration_create()

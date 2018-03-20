@@ -11,7 +11,7 @@ RIGHT = "right"
 
 
 # Main page controller, currently contains most of the style controls
-class Page(window_elements.Subwindow):
+class Page(window_elements.HierarchyObject):
     priority = 127
 
     # Gap between text and side of the screen, also controls some other spacing
@@ -38,8 +38,6 @@ class Page(window_elements.Subwindow):
         super().__init__(master)
         self.cursor = input_handler.get_cursor()  # TODO make this controlled by either the master window or subwindow
 
-        master.register(self)
-
         self.offset = 0  # How far down the text goes
         self.scroll = 0  # How far down the user has scrolled
 
@@ -49,7 +47,7 @@ class Page(window_elements.Subwindow):
 
         self.next_clear = 0  # How far down does image go, if one is currently being spaced
 
-    def get_page(self):
+    def get_window(self):
         return self
 
     # Tell page that vertical space has been used
@@ -102,89 +100,69 @@ class Page(window_elements.Subwindow):
                 self.scroll = int(self.scroll)
 
 
-class Paragraph(window_elements.Subwindow):  # TODO should this be a subwindow?
+class Paragraph(window_elements.HierarchyObject):
     priority = 32
 
-    def __init__(self, master):
-        super().__init__(master)
-        self.master = master
-        self.master.register(self)
-        self.master_margins = master.margins
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.master_margins = parent.margins
         self.margins = self.master_margins
-        self.left_margin = master.left_margin
-        self.right_margin = master.right_margin
-        self.font_size = master.font_size
-        self.font = master.font
-        self.font_color = master.font_color
-        self.font_spacing = master.font_spacing
-        self.font_indent = master.font_indent
-        self.offset = master.offset
+        self.left_margin = parent.left_margin
+        self.right_margin = parent.right_margin
+        self.font_size = parent.font_size
+        self.font = parent.font
+        self.font_color = parent.font_color
+        self.font_spacing = parent.font_spacing
+        self.font_indent = parent.font_indent
+        self.offset = parent.offset
         self.last_offset = self.offset
-        self.page = master.get_page()
-
-    def get_page(self):
-        return self.page
 
     def increase_offset(self, increase):
         self.last_offset = self.offset
         self.offset += increase
-        self.master.increase_offset(increase)
-        self.left_margin = self.master.left_margin
-        self.right_margin = self.master.right_margin
+        self.parent.increase_offset(increase)
+        self.left_margin = self.parent.left_margin
+        self.right_margin = self.parent.right_margin
 
     def set_left_margin(self, amount):
         self.left_margin = amount
-        self.master.left_margin = amount
+        self.parent.left_margin = amount
 
     def set_right_margin(self, amount):
         self.right_margin = amount
-        self.master.right_margin = amount
+        self.parent.right_margin = amount
 
     def set_next_clear(self, next):
-        self.master.next_clear = next
-
-    def close(self):
-        self.master.unregister(self)
+        self.parent.next_clear = next
 
 
 # Base class for AML elements being drawn on screen
-class GenericAmlElement:
+class GenericAmlElement(window_elements.HierarchyObject):
     priority = 32
 
-    def __init__(self, master):
-        master.register(self)  # TODO handle the fact that this might have children
-        self.screen = master.screen
-        self.offset = master.offset
-        self.margins = master.margins
-        self.left_margin = master.left_margin
-        self.right_margin = master.right_margin
-        self.master = master
-        self.page = master.get_page()
-        self.scroll = self.page.scroll
-
-    def get_page(self):
-        return self.page
-
-    def draw(self):
-        pass
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.offset = parent.offset
+        self.margins = parent.margins
+        self.left_margin = parent.left_margin
+        self.right_margin = parent.right_margin
+        self.scroll = self.window.scroll
 
     # Get current amount of scrolling
     def update(self):
-        self.scroll = self.page.scroll
-
-    def close(self):
-        self.master.unregister(self)
+        super().update()
+        self.scroll = self.window.scroll
 
 
 class Title(GenericAmlElement):
     priority = 64
 
-    def __init__(self, master, title, directory):
-        super().__init__(master)
+    def __init__(self, parent, title, directory):
+        super().__init__(parent)
 
-        self.font = pygame.font.SysFont(master.title_font, master.title_size)
+        self.font = pygame.font.SysFont(parent.title_font, parent.title_size)
         self.title_text = title
-        self.display_text = self.font.render(self.title_text, True, master.title_color)
+        self.display_text = self.font.render(self.title_text, True, parent.title_color)
 
         url = directory + "header.bmp"
         self.img = get_image(url, 1.01)
@@ -198,22 +176,22 @@ class Title(GenericAmlElement):
 
 
 class TextLine(GenericAmlElement):
-    def __init__(self, master):
-        super().__init__(master)
+    def __init__(self, parent):
+        super().__init__(parent)
 
-        self.indent = master.font_indent
-        self.font = pygame.font.SysFont(master.font, master.font_size)
+        self.indent = parent.font_indent
+        self.font = pygame.font.SysFont(parent.font, parent.font_size)
         self.line_text = None
         self.display_text = None
 
         # Create dummy text to get vertical spacing without needing content
-        dummy_text = self.font.render(' ', True, master.font_color)
+        dummy_text = self.font.render(' ', True, parent.font_color)
 
         # How much space is left on the line
         self.extra_space = config.screen_x - self.margins * 2 - self.left_margin + self.right_margin
 
-        master.increase_offset(dummy_text.get_height())  # Space taken up by actual content
-        master.increase_offset(master.font_spacing)  # Space taken up by font spacing
+        parent.increase_offset(dummy_text.get_height())  # Space taken up by actual content
+        parent.increase_offset(parent.font_spacing)  # Space taken up by font spacing
 
     def draw(self):
         # Horizontal position defined by normal margin plus indent plus space taken up by image if any
@@ -246,18 +224,18 @@ class TextLine(GenericAmlElement):
         self.extra_space = config.screen_x - self.margins * 2 - self.font.size(text[:i])[0]
 
         # Text being displayed is what was able to fit
-        self.display_text = self.font.render(self.line_text, True, self.master.font_color)
+        self.display_text = self.font.render(self.line_text, True, self.window.font_color)
 
         # Text if any that needs to be put on next line
         return extra_text
 
     def set_left_margin(self, amount):
         self.left_margin = amount
-        self.master.set_left_margin(amount)
+        self.parent.set_left_margin(amount)
 
     def set_right_margin(self, amount):
         self.right_margin = amount
-        self.master.set_right_margin(amount)
+        self.parent.set_right_margin(amount)
 
     # See if there's room to shift the text over to fit an image on the line
     def shift(self, direction, amount):
@@ -268,14 +246,14 @@ class TextLine(GenericAmlElement):
 
 
 class Heading(GenericAmlElement):
-    def __init__(self, master, text):
-        super().__init__(master)
-        master.increase_offset(master.margins)
-        self.offset = master.go_next_clear()
-        self.font = pygame.font.SysFont(master.heading_font, master.heading_size)
+    def __init__(self, parent, text):
+        super().__init__(parent)
+        parent.increase_offset(parent.margins)
+        self.offset = parent.go_next_clear()
+        self.font = pygame.font.SysFont(parent.heading_font, parent.heading_size)
         self.display_text = self.font.render(text, True, (0, 0, 0))
-        master.increase_offset(self.display_text.get_height())
-        master.increase_offset(scale(15))
+        parent.increase_offset(self.display_text.get_height())
+        parent.increase_offset(scale(15))
 
     def draw(self):
         self.screen.blit(self.display_text, (self.margins, self.offset + self.scroll))
@@ -283,29 +261,29 @@ class Heading(GenericAmlElement):
 
 # Footer at the bottom to return to map
 class Footer(GenericAmlElement):
-    def __init__(self, master):
-        super().__init__(master)
+    def __init__(self, parent):
+        super().__init__(parent)
         url = "Resources/home.bmp"
         self.img = get_image(url, 0.75)
         self.img_width = self.img.get_rect().size[0]
         self.img_height = self.img.get_rect().size[1]
 
         # Start the image after any images are done
-        master.go_next_clear()
-        master.increase_offset(master.margins*3)  # Add some spacing
-        self.offset = master.offset
+        parent.go_next_clear()
+        parent.increase_offset(parent.margins * 3)  # Add some spacing
+        self.offset = parent.offset
 
         # Radius of circle around home icon
-        self.circle_radius = int(self.master.margins + self.img_width/2)
+        self.circle_radius = int(self.parent.margins + self.img_width/2)
 
         # Collider box around home icon to return to map
-        self.base_x = int((config.screen_x-self.img_width)/2 - self.master.margins)
+        self.base_x = int((config.screen_x-self.img_width)/2 - self.parent.margins)
         self.base_y = int(self.offset + self.img_height/2 + self.circle_radius)
         self.collider_box = pygame.Rect(self.base_x, self.base_y, self.circle_radius * 2, self.circle_radius * 2)
         self.is_selected = 0
 
         # Add some spacing below
-        master.increase_offset(self.circle_radius * 2)
+        parent.increase_offset(self.circle_radius * 2)
 
     def draw(self):
         # Draw icon
@@ -314,10 +292,10 @@ class Footer(GenericAmlElement):
         line_y = int(self.scroll + self.offset + self.img_height/2)
 
         # Draw lines on left and right of home icon
-        pygame.draw.line(self.screen, self.master.font_color, (self.master.margins, line_y),
-                         ((config.screen_x-self.img_width)/2 - self.master.margins, line_y), 2)
-        pygame.draw.line(self.screen, self.master.font_color, (config.screen_x - self.master.margins, line_y),
-                         ((config.screen_x + self.img_width) / 2 + self.master.margins, line_y), 2)
+        pygame.draw.line(self.screen, self.parent.font_color, (self.parent.margins, line_y),
+                         ((config.screen_x-self.img_width)/2 - self.parent.margins, line_y), 2)
+        pygame.draw.line(self.screen, self.parent.font_color, (config.screen_x - self.parent.margins, line_y),
+                         ((config.screen_x + self.img_width) / 2 + self.parent.margins, line_y), 2)
 
         # Draw circle around home icon proportional to how "selected" it is
         try:
@@ -330,19 +308,18 @@ class Footer(GenericAmlElement):
         super().update()
         self.collider_box.y = int(self.scroll + self.offset + self.img_height/2 - self.circle_radius)
 
-        cursor_x = self.master.cursor.x_pos
-        cursor_y = self.master.cursor.y_pos
+        cursor_x = self.window.cursor.x_pos
+        cursor_y = self.window.cursor.y_pos
 
         # If box is selected
-        if self.master.cursor.is_valid \
+        if self.window.cursor.is_valid \
                 and self.collider_box.collidepoint(cursor_x, cursor_y):
             # Increase confidence user is actually "clicking" on the box
             self.is_selected += 3
             if self.is_selected > 255:
                 log("Button pressed to return home", 2)
                 self.is_selected = 0
-                self.master.close()
-                map.run(self.master.parent.parent)
+                map.run(self.master)
         else:  # Decrease confidence user is "clicking" on the box
             if self.is_selected > 0:
                 self.is_selected -= 10
@@ -351,23 +328,23 @@ class Footer(GenericAmlElement):
 
 
 class Image(GenericAmlElement):
-    def __init__(self, master, alignment, url, resize):
-        super().__init__(master)
+    def __init__(self, parent, alignment, url, resize):
+        super().__init__(parent)
         self.img = get_image(url, resize)
         self.width = self.img.get_rect().size[0]
         self.height = self.img.get_rect().size[1]
-        self.y_off = self.master.last_offset
+        self.y_off = self.parent.last_offset
         if alignment == LEFT:
-            master.set_left_margin(self.width)
+            parent.set_left_margin(self.width)
             self.x_off = self.margins
         elif alignment == RIGHT:
-            master.set_right_margin(self.width)
+            parent.set_right_margin(self.width)
             self.x_off = config.screen_x - self.width - self.margins
-        master.set_next_clear(self.y_off + self.height)
+        parent.set_next_clear(self.y_off + self.height)
 
     def draw(self):
         self.screen.blit(self.img, (self.x_off, self.y_off + self.scroll))
 
     def shift(self):
-        self.y_off = self.master.offset
-        self.master.set_next_clear(self.y_off + self.height)
+        self.y_off = self.parent.offset
+        self.parent.set_next_clear(self.y_off + self.height)
