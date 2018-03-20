@@ -14,17 +14,22 @@
 <!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
- <p>
+    <p>
     The building code is FMPD
-
+    </p>
+    <p>
+    <img src="police_department_4392_0.bmp" alignment="right" scale="1">
+    </p>
+    <p>
     Location: East Side of Campus.  South of the roundabout
-
+    </p>
+    <p>
+    </p>
+    <p>
    Uses/Features: One building is home to both Facilities Management & the ASU Police Department.  Facilities Management
    is responsible for the Polytechnic buildings & grounds and provides assistance with keys and electronic building
    access.
-    <img src="police_department_4392_0.bmp" alignment="right" scale="1">
-
-</p>
+    </p>
 
 </body>
 </aml>
