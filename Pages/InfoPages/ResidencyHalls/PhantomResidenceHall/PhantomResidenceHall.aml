@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Phantom Residence Hall</title>
 </head>
 
 <body>
@@ -14,20 +14,19 @@
 <!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
- <p>
-    The building code is
-
-    Location:
-
-    Uses:
-
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+ <p>The building code is PHANT
+    <img src="Phantom2.bmp" alignment="right" scale="1">
+</p>
+<p>
+    Location: On the North end of campus east of the Simulation Building.
+</p>
+<p>
+   Uses/Features: Each suite in Phantom Hall consists of two single bedrooms connected by a kitchen equipped with two
+   medium refrigerators, a sink, a microwave, and a stove/oven. Amenities include, laundry facilities, a study lounge
+   and a community lounge. Every residence hall room is equipped with a high-speed Ethernet connection,and an cable TV
+   connection.
 
 </p>
-
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
 
 </body>
 </aml>

@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Simulator Building</title>
 </head>
 
 <body>
@@ -15,14 +15,16 @@
 
 <h1>Basic Building Information</h1>
  <p>
-    The building code is
+    The building code is SIM
 
-    Location:
+    Location: In the northwest corner of campus.
 
-    Uses:
+   Uses/Features: Students enrolled in the Professional Flight program are familiar with the five flight simulators
+   housed in the Simulator Building. These state-of-the-art simulators prepare students to take flight before setting
+   foot in an airplane.
+    <img src="Sim.bmp" alignment="right" scale="1">
 
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
-    </p>
+</p>
 
 </body>
 </aml>

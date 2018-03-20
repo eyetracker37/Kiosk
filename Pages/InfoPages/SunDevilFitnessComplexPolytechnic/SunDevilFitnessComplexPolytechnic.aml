@@ -1,7 +1,7 @@
 <aml>
 
 <head>
-<title>Academic Complex</title>
+<title>Fitness Complex</title>
 </head>
 
 <body>
@@ -15,14 +15,23 @@
 
 <h1>Basic Building Information</h1>
  <p>
-    The building code is
+    The building code is SDFCP
 
-    Location:
+    Location: West of the Citrus Dining Pavilion
 
-    Uses:
+   Uses/Features: Completed in 2013, the Sun Devil Fitness Complex can be used by faculty, staff, and students. This
+   state-of-the-art facility contains indoor basketball/badminton/volleyball and racquetball courts, circuit weight
+   room and free weight areas, multi-purpose rooms for various fitness classes, and a mixed martial arts room. On the
+   second-floor loft, there is extensive cardio equipment, including treadmills, stair steppers, and ellipticals.
+   Outside there is swimming and volleyball in the 25m heated pool, baseball/softball and soccer/rugby fields, sand
+   volleyball, basketball and tennis courts, and an outdoor yoga lawn. Lockers and showers are available on-site, and
+   most equipment have iPod plug-ins. There is also a large meeting room off the main entrance patio. ASU Health
+   Services is located on the west side of the building.
 
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
-    </p>
+
+    <img src="Fitness3.bmp" alignment="right" scale="1">
+
+</p>
 
 </body>
 </aml>

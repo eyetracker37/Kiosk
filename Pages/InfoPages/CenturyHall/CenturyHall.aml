@@ -11,16 +11,36 @@
 <!-- Header pictures need to be called heder.bmp. -->
 <!-- aml needs the same name as the file. -->
 <!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
- <p>
-    The building code is
+    <p>
+    The building code is CNTRY
+    </P>
+    <p>
+    <img src="outside.bmp" alignment="right" scale="1">
+    </p>
+    <P>
+    Location: Towards the heart of the Polytechnic campus north of the Student Union.
+    </P>
+    <p>
+    </p>
+    <p>
+    Uses/Features: At the Polytechnic campus, freshmen reside in the newly built Century Hall. The new three-story,
+    84,000 square-foot residence hall, has two three-story residence wings, creating an environment where students will
+    live with other students who share the same major, interact with faculty members and have access to academic
+    resources and student services outside of the classroom.
+    </p>
+    Century Hall is home to the Residential Communities for the Ira A. Fulton Schools of Engineering; Mary Lou Fulton
+    Teachers College; W. P. Carey School of Business; University College Explorers; and Barrett, the Honors College
+    Residential College.
 
-    Location:
+    The two wings of the building are linked together by a one-story common area with a lobby, 24-hour information desk,
+    administration offices, community kitchen, two multipurpose rooms, a group study room and a small collaborative
+    studio known as the Solution Space. Outside the common area, there are two gas grills, seating space, and a
+    courtyard. Each wing features three student activity lounges, one on each floor for pool, foosball, and table
+    tennis. In addition, each floor includes a TV, two quiet study rooms, and a laundry area free to Century residents.
 
-    Uses:
-
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
 
 </p>
 

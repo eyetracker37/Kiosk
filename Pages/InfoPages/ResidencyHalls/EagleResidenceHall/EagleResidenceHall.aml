@@ -15,19 +15,17 @@
 
 <h1>Basic Building Information</h1>
  <p>
-    The building code is
+    The building code is EAGLE
 
-    Location:
+    Location: On the North end of campus east of the Simulation Building.
 
-    Uses:
-
-    <img src="AcademicCenter1.bmp" alignment="right" scale="1">
+   Uses/Features: Eagle Hall offers double-occupancy suites. Each suite consists of two bedrooms connected by a kitchen
+   equipped with two small refrigerators, a sink and a microwave. Amenities include laundry facilities, a study lounge,
+   and a community lounge. Every residence hall room is equipped with a high-speed Ethernet connection, local phone
+   service and cable TV connection.
+    <img src="EagleOutside.bmp" alignment="right" scale="1">
 
 </p>
-
-<h1>Another heading!</h1>
-
-<p>And then some words!</p>
 
 </body>
 </aml>
