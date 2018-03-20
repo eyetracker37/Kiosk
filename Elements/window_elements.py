@@ -84,7 +84,6 @@ class MasterWindow:
                     self.kill_threads()
             else:
                 pass
-
         self.current_window.draw()
         pygame.display.flip()
 

@@ -49,6 +49,9 @@ class Page(window_elements.Subwindow):
 
         self.next_clear = 0  # How far down does image go, if one is currently being spaced
 
+    def get_page(self):
+        return self
+
     # Tell page that vertical space has been used
     def increase_offset(self, increase):
         if self.offset >= self.next_clear:  # If we are now clear of the image being spaced, reset margins
@@ -75,9 +78,9 @@ class Page(window_elements.Subwindow):
         # Scrolling handler
         if self.offset > config.screen_y:  # Only scroll if page is longer than screen can fit
             if self.cursor.is_valid:
-                deadband = 100
-                min_speed = 5  # Minimum movement speed if moving
-                feathering = 30  # Lower = faster
+                deadband = scale(100)
+                min_speed = scale(5)  # Minimum movement speed if moving
+                feathering = scale(30)  # Lower = faster
 
                 # Distance from center
                 y_off = self.cursor.y_pos - config.screen_y / 2
@@ -95,6 +98,8 @@ class Page(window_elements.Subwindow):
                     self.scroll = -self.offset + config.screen_y
                 elif self.scroll > 0:
                     self.scroll = 0
+
+                self.scroll = int(self.scroll)
 
 
 class Paragraph(window_elements.Subwindow):  # TODO should this be a subwindow?
@@ -115,7 +120,10 @@ class Paragraph(window_elements.Subwindow):  # TODO should this be a subwindow?
         self.font_indent = master.font_indent
         self.offset = master.offset
         self.last_offset = self.offset
-        self.scroll = master.scroll
+        self.page = master.get_page()
+
+    def get_page(self):
+        return self.page
 
     def increase_offset(self, increase):
         self.last_offset = self.offset
@@ -138,10 +146,6 @@ class Paragraph(window_elements.Subwindow):  # TODO should this be a subwindow?
     def close(self):
         self.master.unregister(self)
 
-    def update(self):
-        super().update()
-        self.scroll = self.master.scroll
-
 
 # Base class for AML elements being drawn on screen
 class GenericAmlElement:
@@ -154,15 +158,19 @@ class GenericAmlElement:
         self.margins = master.margins
         self.left_margin = master.left_margin
         self.right_margin = master.right_margin
-        self.scroll = master.scroll
         self.master = master
+        self.page = master.get_page()
+        self.scroll = self.page.scroll
+
+    def get_page(self):
+        return self.page
 
     def draw(self):
         pass
 
     # Get current amount of scrolling
     def update(self):
-        self.scroll = self.master.scroll
+        self.scroll = self.page.scroll
 
     def close(self):
         self.master.unregister(self)
@@ -247,14 +255,13 @@ class TextLine(GenericAmlElement):
         self.left_margin = amount
         self.master.set_left_margin(amount)
 
-    def set_left_margin(self, amount):
+    def set_right_margin(self, amount):
         self.right_margin = amount
         self.master.set_right_margin(amount)
 
     # See if there's room to shift the text over to fit an image on the line
     def shift(self, direction, amount):
         if self.extra_space > amount:
-            self.set_left_margin(amount)
             return True
         else:
             return False
@@ -271,7 +278,7 @@ class Heading(GenericAmlElement):
         master.increase_offset(scale(15))
 
     def draw(self):
-        self.screen.blit(self.display_text, (self.margins, self.offset + self.master.scroll))
+        self.screen.blit(self.display_text, (self.margins, self.offset + self.scroll))
 
 
 # Footer at the bottom to return to map

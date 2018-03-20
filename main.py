@@ -14,8 +14,8 @@ master = window_elements.MasterWindow()
 if config.use_tracker:
     Calibration_Screen.run(master)
 else:
-    #info.run(master, "AravaipaAuditorium")  # Use this to enter directly to info screen
-    map.run(master)  # Runs entry point for GUI
+    info.run(master, "AravaipaAuditorium")  # Use this to enter directly to info screen
+    #map.run(master)  # Runs entry point for GUI
 
 window_elements.run_master(master)
 input_handler.close()  # If master stops, close input handler
