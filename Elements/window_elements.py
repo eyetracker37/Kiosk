@@ -27,6 +27,8 @@ class UpdateThread(threading.Thread):
 
 
 class HierarchyObject:
+    priority = 127
+
     def __init__(self, parent):
         self.parent = parent
         self.parent.register(self)

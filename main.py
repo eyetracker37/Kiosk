@@ -9,7 +9,7 @@ config.initialize()  # Loads config settings
 log_sys_info()  # Logs information about system for debug purposes
 input_handler.initialize()  # Starts up input handler
 
-master = window_elements.MasterWindow()
+master = window_elements.WindowManager()
 
 if config.use_tracker:
     Calibration_Screen.run(master)
