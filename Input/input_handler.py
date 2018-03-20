@@ -28,9 +28,13 @@ class CursorHandler:
             frame = quick_link.get_frame()
 
             with thread_manager.input_lock:  # Make sure it isn't read while updating
-                self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
-                self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
-                self.cursor.is_valid = frame.is_valid
+                try:
+                    self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
+                    self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
+                    self.cursor.is_valid = frame.is_valid
+                except AttributeError:
+                    log("Attempted to get cursor data from NoneType Frame", 1)
+                    self.cursor.is_valid = False
         else:  # Otherwise use keyboard
             with thread_manager.input_lock:
                 try:
