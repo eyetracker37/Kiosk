@@ -1,0 +1,32 @@
+<aml>
+
+<head>
+<title>Engineering Studio</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+<h1>Basic Building Information</h1>
+ <p>The building code is ENGR
+    <img src="EngineeringStudio.bmp" alignment="right" scale="1">
+</p>
+<p>
+    Location: Towards the south side of campus between the Technology Center and the Agribusiness Center
+</p>
+<p>
+   Uses/Features: Studio 90, also known as the Engineering Studio, is a 3,200-square-foot facility with a unique,
+   multipurpose design. The majority of the space is the main studio, which is divided into two zones. The center of the
+   room consists of several large group worktables where students construct physical projects. Electrical connections &
+   compressed air are available for student use. The perimeter of the space includes group workstations, each with a
+   computer.
+
+</p>
+</body>
+</aml>

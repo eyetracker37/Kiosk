@@ -1,0 +1,34 @@
+<aml>
+
+<head>
+<title>Citrus Dining Pavilion</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called heder.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+<h1>Basic Building Information</h1>
+ <p>The building code is CITRS
+    <img src="CitrusOutside.bmp" alignment="right" scale="1">
+</p>
+<p>
+    Location: Towards the heart of the Polytechnic campus west of Century Hall.
+</p>
+<p>
+    Uses/Features: Citrus Dining Pavilion is the new dining facility consisting of a student dining room, a private
+    dining area, Devil’s Den student lounge, Poly Marketplace convenience store, Mesquite Cafe coffee shop, and
+    exterior seating on three sides that will offer connections to the existing campus.
+
+    The All-You-Care-To-Eat restaurant has several stations that change menus for each meal period, daily. Enjoy a deli,
+    full salad bar, grill, home cooking zone, made-to-order station, and more.
+
+</p>
+
+</body>
+</aml>
