@@ -13,13 +13,20 @@
 <!-- Closing Titles need a back slash </p>. -->
 <!-- Need the <img scr="name of picture"> for the picture to show. -->
 
+
 <h1>Basic Building Information</h1>
- <p>
-    The building code is UNION
-
-    Location: At the center of the Polytechnic campus
-
-   Uses/Features: This 27,000 square-foot structure is the first public-use ASU building on the Polytechnic campus
+<p>The building code is UNION
+    <img src="StudentUnion.bmp" alignment="right" scale="1">
+</p>
+    <p>
+    </p>
+<p>
+    Location:  At the center of the Polytechnic campus
+</p>
+    <p>
+    </p>
+<p>
+   Uses/Features:  This 27,000 square-foot structure is the first public-use ASU building on the Polytechnic campus
    constructed from the ground up. The dining area features expansive seating, and the food court offers breakfast,
    lunch, and dinner. The bookstore, located at the main entry, includes an overhead door that can be opened for outdoor
    patio sales and during the "rush" season at the beginning and end of each semester.A covered exterior lobby extends

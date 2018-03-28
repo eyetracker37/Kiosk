@@ -1,0 +1,36 @@
+<aml>
+
+<head>
+<title>Eagle Residence Hall</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+
+<h1>Basic Building Information</h1>
+<p>The building code is EAGLE
+    <img src="Eagle3.bmp" alignment="right" scale="1">
+</p>
+    <p>
+    </p>
+<p>
+    Location: On the North end of campus east of the Simulation Building.
+</p>
+    <p>
+    </p>
+<p>
+Uses/Features: Eagle Hall offers double-occupancy suites. Each suite consists of two bedrooms connected by a kitchen
+   equipped with two small refrigerators, a sink and a microwave. Amenities include laundry facilities, a study lounge,
+   and a community lounge. Every residence hall room is equipped with a high-speed Ethernet connection, local phone
+   service and cable TV connection.
+</p>
+
+</body>
+</aml>

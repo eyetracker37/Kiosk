@@ -23,7 +23,7 @@ class Background(window_elements.HierarchyObject):
     def __init__(self, window):
         global SCALE_FACTOR
         super().__init__(window)
-        self.image = get_image("Resources/asu_poly_map.bmp", SCALE_FACTOR)
+        self.image = get_image("Resources/asu_poly_map2.bmp", SCALE_FACTOR)
         self.imagerect = self.image.get_rect()
         self.width = self.imagerect.width
         self.height = self.imagerect.height
@@ -47,7 +47,7 @@ class Background(window_elements.HierarchyObject):
         if self.cursor.is_valid:
             deadband = scale(100)
             min_speed = scale(5)  # Minimum movement speed if moving
-            feathering = scale(30)  # Lower = faster
+            feathering = scale(150)  # Lower = faster
 
             # Distance from center
             x_off = scale(self.cursor.x_pos - config.screen_x / 2)
@@ -146,24 +146,33 @@ def run(master):
 
     #  X Y Width Height
     InteractionBox(background, 837, 837, 135, 119, "TechnologyCenter")
-    #InteractionBox(background, 1120, 694, 123, 109, "AravaipaAuditorium")
-    #InteractionBox(background, 1023, 874, 62, 40, "EngineeringStudio")
-    #InteractionBox(background,,, , "AcademicCenter")
+    InteractionBox(background, 1118, 688, 125, 62, "AravaipaAuditorium")
+    InteractionBox(background, 1023, 874, 62, 40, "EngineeringStudio")
+    InteractionBox(background, 1104, 23, 124, 67, "EagleResidenceHall")
+    InteractionBox(background, 1087, 517, 150, 131, "AcademicCenter")
     InteractionBox(background, 967, 535, 109, 101, "AdministrationBuilding")
-    #InteractionBox(background, 1081, 855, 154, 129, "AgribusinessCenter")
-    #InteractionBox(background, 1087, 517, 150, 131, "Century Hall")
-    #InteractionBox(background,,, , "CitrusDiningPavillion")
-    #InteractionBox(background,,, , "FacultiesManagementPoliceDepartment")
-    #InteractionBox(background, 970, 739, 146, 79, "PeraltaHall")
-    #InteractionBox(background, 969, 683, 87, 54, "PicachoHall")
-    #InteractionBox(background,,, , "Quads")
-    #InteractionBox(background,,, , "ResidencyHalls")
-    #InteractionBox(background,,, , "SantaCatalinaHall")
-    #InteractionBox(background, 1109, 742, 140, 64, "SantanHall")
-    #InteractionBox(background, 1867, 4, 227154, "SimulatorBuilding")
+    InteractionBox(background, 1081, 855, 154, 129, "AgribusinessCenter")
+    # InteractionBox(background,"ApliedArtsPavilion")
+    InteractionBox(background, 1251, 346, 127, 149, "CenturyHall")
+    InteractionBox(background, 1390, 414, 125, 84, "CitrusDiningPavillion")
+    InteractionBox(background, 686, 735, 90, 119, "FacultiesManagementPoliceDepartment")
+    InteractionBox(background, 970, 739, 146, 79, "PeraltaHall")
+    InteractionBox(background, 969, 683, 87, 54, "PicachoHall")
+    InteractionBox(background, 832, 362, 128, 126, "Quads")
+    InteractionBox(background, 1390, 749, 116, 71, "SantaCatalinaHall")
+    InteractionBox(background, 1109, 742, 140, 64, "SantanHall")
+    InteractionBox(background, 1867, 4, 227,154, "SimulatorBuilding")
     InteractionBox(background, 1266, 519, 148, 112, "StudentUnion")
     #InteractionBox(background,,, , "SunDevilFitnessComplexPolytech")
-    #InteractionBox(background, 1259, 682, 111, 61, "SuttonHall")
-    #InteractionBox(background, 1259, 750, 113, 67, "WannerHall")
+    InteractionBox(background, 1259, 682, 111, 61, "SuttonHall")
+    InteractionBox(background, 1259, 750, 113, 67, "WannerHall")
+    InteractionBox(background, 1238, 849, 89, 95, "BellHall")
+    InteractionBox(background, 1247, 942, 134, 43, "DeanHall")
+    InteractionBox(background, 1317, 23, 128, 70, "FalconResidenceHall")
+    InteractionBox(background, 1449, 18, 78, 166, "MustangResidenceHall")
+    InteractionBox(background, 1529, 740, 116, 110, "PaloBlancoHall")
+    InteractionBox(background, 1253, 94, 127, 76, "PhantomResidenceHall")
+    InteractionBox(background, 1059, 97, 118, 64, "TalonResidenceHall")
+
 
     log("Loaded map window", 3)
