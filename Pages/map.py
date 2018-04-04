@@ -154,7 +154,7 @@ def run(master):
     InteractionBox(background, 1081, 855, 154, 129, "AgribusinessCenter")
     # InteractionBox(background,"ApliedArtsPavilion")
     InteractionBox(background, 1251, 346, 127, 149, "CenturyHall")
-    InteractionBox(background, 1390, 414, 125, 84, "CitrusDiningPavillion")
+    InteractionBox(background, 1390, 414, 125, 84, "CitrusDiningPavilion")
     InteractionBox(background, 686, 735, 90, 119, "FacultiesManagementPoliceDepartment")
     InteractionBox(background, 970, 739, 146, 79, "PeraltaHall")
     InteractionBox(background, 969, 683, 87, 54, "PicachoHall")
