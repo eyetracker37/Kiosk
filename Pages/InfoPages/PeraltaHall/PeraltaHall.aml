@@ -1,0 +1,37 @@
+<aml>
+
+<head>
+<title>Peralta Hall</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+<h1>Basic Building Information</h1>
+ <p>The building code is PRLTA
+    <img src="Peralta.bmp" alignment="right" scale="1">
+</p>
+    <p>
+    </p>
+<p>
+    Location: On the east side of campus south of the Administration building
+</p>
+    <p>
+    </p>
+<p>
+   Uses/Features: The Engineering and Manufacturing Engineering program offices are based in Peralta Hall. In addition,
+   engineering studios equipped with all sorts of tools allow students to work in teams on projects that help solve
+   technological problems. Classrooms to accommodate business and computing, as well as many other subjects, are also
+   in Peralta Hall. And for those admitted into the Barrett Honors College at ASU, support and other services can be
+   found here.
+
+</p>
+
+</body>
+</aml>

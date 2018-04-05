@@ -1,0 +1,35 @@
+<aml>
+
+<head>
+<title>Picacho Hall</title>
+</head>
+
+<body>
+
+<!-- Information we want to appear needs to be surrounded by <p>. -->
+<!-- We need <head> around the headers and <body> around the body. -->
+<!-- Header pictures need to be called header.bmp. -->
+<!-- aml needs the same name as the file. -->
+<!-- Closing Titles need a back slash </p>. -->
+<!-- Need the <img scr="name of picture"> for the picture to show. -->
+
+<h1>Basic Building Information</h1>
+ <p>The building code is PICHO
+    <img src="PicachoOutside.bmp" alignment="right" scale="1">
+</p>
+    <p>
+    </p>
+<p>
+    Location: Picacho Hall is adjacent to Peralta Hall.
+</p>
+    <p>
+    </p>
+<p>
+   Uses/Features: Picacho Hall houses the only 150-seat lecture hall on campus. The lecture hall is fully equipped with
+   the latest learning technologies and amenities for students. Off the lecture hall is a large lobby that is used for
+   special events or gathering space for students. There are also classrooms and seminar rooms.
+
+</p>
+
+</body>
+</aml>
