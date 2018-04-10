@@ -36,7 +36,7 @@ class Page(window_elements.HierarchyObject):
 
     def __init__(self, master):
         super().__init__(master)
-        self.cursor = input_handler.get_cursor()  # TODO make this controlled by either the master window or subwindow
+        self.cursor = self.get_cursor()
 
         self.offset = 0  # How far down the text goes
         self.scroll = 0  # How far down the user has scrolled
@@ -71,7 +71,7 @@ class Page(window_elements.HierarchyObject):
     def update(self):
         super().update()
 
-        self.cursor = input_handler.get_cursor()
+        self.cursor = self.get_cursor()
 
         # Scrolling handler
         if self.offset > config.screen_y:  # Only scroll if page is longer than screen can fit

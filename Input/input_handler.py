@@ -8,6 +8,7 @@ from Utils import config
 import pygame
 from pygame import mouse
 from Utils import thread_manager
+from Elements import window_elements
 
 
 # Position of the gaze/mouse on the screen
@@ -19,8 +20,17 @@ class Cursor:
 
 
 class CursorHandler:
-    def __init__(self):
+    def __init__(self, master):
+        assert isinstance(master, window_elements.WindowManager)
+        self.master = master
+
         self.cursor = Cursor()
+
+        if config.use_tracker:
+            quick_link.initialize()
+        self.update_thread = UpdateThread(master, self, thread_manager.get_thread_id())
+        self.update_thread.start()
+        log("Update thread started", 2)
 
     def update(self):
         # If getting data from the eye tracker
@@ -57,46 +67,27 @@ class CursorHandler:
         with thread_manager.input_lock:  # Make sure it doesn't update while reading
             return self.cursor
 
-
-cursor = CursorHandler()
+    # Stop getting cursor position
+    def close(self):
+        log("Closing update thread", 3)
+        self.update_thread.join()  # Join thread to wait until it closes
+        log("Update thread closed", 2)
+        if config.use_tracker:
+            quick_link.stop_all()
 
 
 # Thread that gets the cursor position
 class UpdateThread(threading.Thread):
-    def __init__(self, threadID):
+    def __init__(self, window, cursor, threadID):
         threading.Thread.__init__(self)
         self.threadID = threadID
+        self.cursor = cursor
+
+        assert isinstance(window, window_elements.WindowManager)
+        self.window = window
 
     def run(self):
-        global cursor
         log("Starting update thread", 3)
         while thread_manager.running:
-            cursor.update()
+            self.cursor.update()
             thread_manager.clock.tick(60)
-
-
-update_thread = UpdateThread(thread_manager.get_thread_id())
-
-
-# Start getting cursor position
-def initialize():
-    if config.use_tracker:
-        quick_link.initialize()
-    update_thread.start()
-    log("Update thread started", 2)
-
-
-# Get the cursor position
-def get_cursor():
-    return cursor.get_cursor()
-
-
-# Stop getting cursor position
-def close():
-    log("Closing update thread", 3)
-    global is_running
-    is_running = False
-    update_thread.join()  # Join thread to wait until it closes
-    log("Update thread closed", 2)
-    if config.use_tracker:
-        quick_link.stop_all()

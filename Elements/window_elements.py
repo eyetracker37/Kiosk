@@ -5,6 +5,7 @@ from pygame.locals import *
 from Utils import thread_manager
 import threading
 from Utils import config
+from Input import input_handler
 
 
 class UpdateThread(threading.Thread):
@@ -33,6 +34,7 @@ class HierarchyObject:
         self.parent = parent
         self.parent.register(self)
         self.master = parent.get_master()
+        assert isinstance(self.master, WindowManager)
         self.window = parent.get_window()
         self.screen = self.master.screen
         self.child_list = []  # All of the elements on the screen
@@ -42,6 +44,9 @@ class HierarchyObject:
 
     def get_window(self):
         return self.window
+
+    def get_cursor(self):
+        return self.master.get_cursor()
 
     # Register as a child of the Subwindow to be added to the update/draw list
     def register(self, child):
@@ -94,6 +99,8 @@ class WindowManager:
         self.screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
         log("Master screen started", 2)
 
+        self.cursor = input_handler.CursorHandler(self)
+
         # Creates and starts the update thread
         self.update_thread = UpdateThread(self)
         self.update_thread.start()
@@ -108,6 +115,9 @@ class WindowManager:
 
     def unregister(self, window):
         pass
+
+    def get_cursor(self):
+        return self.cursor.get_cursor()
 
     # Kill update thread
     def kill_threads(self):

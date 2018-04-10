@@ -39,11 +39,11 @@ class Background(window_elements.HierarchyObject):
         self.off_x = 0
         self.off_y = 0
 
-        self.cursor = input_handler.get_cursor()
+        self.cursor = self.get_cursor()
 
     def update(self):
         super().update()
-        self.cursor = input_handler.get_cursor()
+        self.cursor = self.get_cursor()
         if self.cursor.is_valid:
             deadband = scale(100)
             min_speed = scale(5)  # Minimum movement speed if moving
@@ -109,7 +109,6 @@ class InteractionBox(window_elements.HierarchyObject):
     def draw(self):
         super().draw()
         if self.is_selected:
-            print(self.is_selected)
             pygame.gfxdraw.rectangle(self.screen, self.box, (255, 0, 0, self.is_selected))
 
     def update(self):
