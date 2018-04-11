@@ -12,6 +12,10 @@ RED = (255, 0, 0)
 class IntroScreen(window_elements.HierarchyObject):
     priority = 0  # Draw on bottom
 
+    def __init__(self, window):
+        super().__init__(window)
+        self.draw()
+
     def draw(self):
         self.screen.fill(WHITE)
         super().draw()

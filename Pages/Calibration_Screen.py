@@ -143,7 +143,6 @@ class CalibrationPoint(window_elements.HierarchyObject):
 
 def run(master):
     log("Calibration starting", 2)
-    window = window_elements.HierarchyObject(master)
 
     log("Creating calibration file", 3)
     calibration = quick_link.calibration_create()
@@ -151,6 +150,8 @@ def run(master):
 
     log("Initializing calibration", 3)
     quick_link.calibration_initialize(identifier, calibration)
+
+    window = window_elements.HierarchyObject(master)
 
     CalibrationPoint(window, calibration)
     Background(window)

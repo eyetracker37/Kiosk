@@ -30,9 +30,7 @@ class CursorHandler:
 
         self.cursor = Cursor()
 
-        if config.use_tracker:
-            quick_link.initialize()
-        self.is_running = True
+        self.is_running = False
         self.update_thread = UpdateThread(master, self, thread_manager.get_thread_id())
         self.update_thread.start()
         self.last_valid = time.time()
@@ -40,57 +38,60 @@ class CursorHandler:
 
     def update(self):
         # If getting data from the eye tracker
-        if config.use_tracker:
-            frame = quick_link.get_frame()
+        if self.is_running:
+            if config.use_tracker:
+                frame = quick_link.get_frame()
 
-            with thread_manager.input_lock:  # Make sure it isn't read while updating
-                try:
-                    self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
-                    self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
-                    self.cursor.is_valid = frame.is_valid
-                except AttributeError:
-                    log("Attempted to get cursor data from NoneType Frame", 1)
-                    self.cursor.is_valid = False
-        else:  # Otherwise use keyboard
-            with thread_manager.input_lock:
-                try:
-                    self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
-                except pygame.error:
-                    pass
-            self.cursor.is_valid = True
+                with thread_manager.input_lock:  # Make sure it isn't read while updating
+                    try:
+                        self.cursor.x_pos = int(config.screen_x * frame.x_pos / 100)
+                        self.cursor.y_pos = int(config.screen_y * frame.y_pos / 100)
+                        self.cursor.is_valid = frame.is_valid
+                    except AttributeError:
+                        log("Attempted to get cursor data from NoneType Frame", 1)
+                        self.cursor.is_valid = False
+            else:  # Otherwise use keyboard
+                with thread_manager.input_lock:
+                    try:
+                        self.cursor.x_pos, self.cursor.y_pos = mouse.get_pos()
+                    except pygame.error:
+                        pass
+                self.cursor.is_valid = True
 
-        current_time = time.time()
-        if self.cursor.is_valid:
-            self.last_valid = current_time
-        else:
-            if current_time - self.last_valid > self.TIMEOUT and self.is_running:
-                log("Eye tracker resetting due to lack of activity", 1)
-                self.reset()
+            current_time = time.time()
+            if self.cursor.is_valid:
+                self.last_valid = current_time
+            else:
+                if current_time - self.last_valid > self.TIMEOUT and self.is_running:
+                    log("Eye tracker resetting due to lack of activity", 1)
+                    self.reset()
 
-        # Handle bounds of screen
-        if self.cursor.x_pos < 0:
-            self.cursor.x_pos = 0
-        if self.cursor.x_pos > config.screen_x:
-            self.cursor.x_pos = config.screen_x
-        if self.cursor.y_pos < 0:
-            self.cursor.y_pos = 0
-        if self .cursor.y_pos > config.screen_y:
-            self.cursor.y_pos = config.screen_y
+            # Handle bounds of screen
+            if self.cursor.x_pos < 0:
+                self.cursor.x_pos = 0
+            if self.cursor.x_pos > config.screen_x:
+                self.cursor.x_pos = config.screen_x
+            if self.cursor.y_pos < 0:
+                self.cursor.y_pos = 0
+            if self .cursor.y_pos > config.screen_y:
+                self.cursor.y_pos = config.screen_y
 
     def get_cursor(self):
         with thread_manager.input_lock:  # Make sure it doesn't update while reading
             return self.cursor
 
     def reset(self):
+        log("Resetting eye tracker", 1)
         self.is_running = False
-        welcome.run(self.master)
         if config.use_tracker:
             quick_link.stop_all()
+        welcome.run(self.master)
 
     def start(self):
+        log("Starting eye tracker", 1)
         if config.use_tracker:
             quick_link.initialize()
-
+        log("Got tracking", 2)
         self.last_valid = time.time()
         self.is_running = True
 
