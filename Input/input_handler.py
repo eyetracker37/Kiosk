@@ -9,6 +9,8 @@ import pygame
 from pygame import mouse
 from Utils import thread_manager
 from Elements import window_elements
+import time
+from Pages import welcome
 
 
 # Position of the gaze/mouse on the screen
@@ -20,6 +22,8 @@ class Cursor:
 
 
 class CursorHandler:
+    TIMEOUT = 30
+
     def __init__(self, master):
         assert isinstance(master, window_elements.WindowManager)
         self.master = master
@@ -28,8 +32,10 @@ class CursorHandler:
 
         if config.use_tracker:
             quick_link.initialize()
+        self.is_running = True
         self.update_thread = UpdateThread(master, self, thread_manager.get_thread_id())
         self.update_thread.start()
+        self.last_valid = time.time()
         log("Update thread started", 2)
 
     def update(self):
@@ -53,6 +59,14 @@ class CursorHandler:
                     pass
             self.cursor.is_valid = True
 
+        current_time = time.time()
+        if not self.cursor.is_valid:
+            self.last_valid = current_time
+        else:
+            if current_time - self.last_valid > self.TIMEOUT and self.is_running:
+                log("Eye tracker resetting due to lack of activity", 1)
+                self.reset()
+
         # Handle bounds of screen
         if self.cursor.x_pos < 0:
             self.cursor.x_pos = 0
@@ -66,6 +80,19 @@ class CursorHandler:
     def get_cursor(self):
         with thread_manager.input_lock:  # Make sure it doesn't update while reading
             return self.cursor
+
+    def reset(self):
+        self.is_running = False
+        welcome.run(self.master)
+        if config.use_tracker:
+            quick_link.stop_all()
+
+    def start(self):
+        if config.use_tracker:
+            quick_link.initialize()
+
+        self.last_valid = time.time()
+        self.is_running = True
 
     # Stop getting cursor position
     def close(self):

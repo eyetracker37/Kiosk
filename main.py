@@ -1,4 +1,4 @@
-from Pages import map, info
+from Pages import map, info, welcome
 from Pages import Calibration_Screen
 from Utils import config
 from Utils.logger import log_sys_info
@@ -10,7 +10,7 @@ log_sys_info()  # Logs information about system for debug purposes
 master = window_elements.WindowManager()
 
 if config.use_tracker:
-    Calibration_Screen.run(master)
+    welcome.run()  # Load welcome screen
 else:
     #info.run(master, "CitrusDiningPavilion")  # Use this to enter directly to info screen
     map.run(master)  # Runs entry point for GUI
