@@ -36,7 +36,7 @@ class CursorHandler:
         self.update_thread = UpdateThread(master, self, thread_manager.get_thread_id())
         self.update_thread.start()
         self.last_valid = time.time()
-        log("Update thread started", 2)
+        log("Input update thread started", 2)
 
     def update(self):
         # If getting data from the eye tracker
@@ -60,7 +60,7 @@ class CursorHandler:
             self.cursor.is_valid = True
 
         current_time = time.time()
-        if not self.cursor.is_valid:
+        if self.cursor.is_valid:
             self.last_valid = current_time
         else:
             if current_time - self.last_valid > self.TIMEOUT and self.is_running:
