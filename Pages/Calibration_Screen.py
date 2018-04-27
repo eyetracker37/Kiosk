@@ -138,7 +138,10 @@ class CalibrationPoint(window_elements.HierarchyObject):
 
     def draw(self):
         super().draw()
-        pygame.draw.circle(self.screen, self.color, [int(self.x), int(self.y)], self.size)
+        try:
+            pygame.draw.circle(self.screen, self.color, [int(self.x), int(self.y)], self.size)
+        except AttributeError:
+            pass
 
 
 def run(master):
