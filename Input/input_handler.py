@@ -22,7 +22,7 @@ class Cursor:
 
 
 class CursorHandler:
-    TIMEOUT = 30
+    TIMEOUT = 7
 
     def __init__(self, master):
         assert isinstance(master, window_elements.WindowManager)
