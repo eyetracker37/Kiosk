@@ -7,6 +7,7 @@ from Utils.logger import log
 from enum import Enum
 from Input import quick_link
 from Pages import map
+from Utils.scale import scale
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -53,6 +54,17 @@ class CalibrationPoint(window_elements.HierarchyObject):
         self.shrink_speed = 1
         self.size = self.grown_size
         self.color = WHITE
+
+        font = "opensans"
+        size = scale(80)
+        text = "Calibrating, watch the circle"
+        self.font = pygame.font.SysFont(font, size)
+        self.display_text = self.font.render(text, True, (0, 0, 0))
+
+        width, height = self.font.size(text)
+
+        self.x_off = (config.screen_x - width) / 2
+        self.y_off = (config.screen_y - height) / 2
 
     def is_calibrating(self):
         status = quick_link.calibration_get_status(self.calibration, self.current_target)
@@ -139,6 +151,7 @@ class CalibrationPoint(window_elements.HierarchyObject):
     def draw(self):
         super().draw()
         try:
+            self.screen.blit(self.display_text, (self.x_off, self.y_off))
             pygame.draw.circle(self.screen, self.color, [int(self.x), int(self.y)], self.size)
         except AttributeError:
             pass
