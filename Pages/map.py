@@ -47,7 +47,7 @@ class Background(window_elements.HierarchyObject):
         if self.cursor.is_valid:
             deadband = scale(100)
             min_speed = scale(5)  # Minimum movement speed if moving
-            feathering = scale(150)  # Lower = faster
+            feathering = scale(100)  # Lower = faster
 
             # Distance from center
             x_off = scale(self.cursor.x_pos - config.screen_x / 2)

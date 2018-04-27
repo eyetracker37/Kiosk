@@ -279,7 +279,7 @@ class Footer(GenericAmlElement):
         # Collider box around home icon to return to map
         self.base_x = int((config.screen_x-self.img_width)/2 - self.parent.margins)
         self.base_y = int(self.offset + self.img_height/2 + self.circle_radius)
-        self.collider_box = pygame.Rect(self.base_x, self.base_y, self.circle_radius * 2, self.circle_radius * 2)
+        self.collider_box = pygame.Rect(self.base_x - self.circle_radius, self.base_y - self.circle_radius, self.circle_radius * 4, self.circle_radius * 4)
         self.is_selected = 0
 
         # Add some spacing below
@@ -299,7 +299,7 @@ class Footer(GenericAmlElement):
 
         # Draw circle around home icon proportional to how "selected" it is
         try:
-            pygame.draw.circle(self.screen, (55, 55, 55), (int(config.screen_x/2), line_y), int(self.circle_radius / 255 * self.is_selected), 2)
+            pygame.draw.circle(self.screen, (55, 55, 55), (int(config.screen_x/2), line_y), int(self.circle_radius / 255 * (255 - self.is_selected)), 2)
         except ValueError:  # Handle circle having size zero by not drawing it
             pass
 
