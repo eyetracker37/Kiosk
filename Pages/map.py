@@ -23,7 +23,7 @@ class Background(window_elements.HierarchyObject):
     def __init__(self, window):
         global SCALE_FACTOR
         super().__init__(window)
-        self.image = get_image("Resources/asu_poly_map2.bmp", SCALE_FACTOR)
+        self.image = get_image("Resources/asu_poly_map.bmp", SCALE_FACTOR)
         self.imagerect = self.image.get_rect()
         self.width = self.imagerect.width
         self.height = self.imagerect.height
@@ -151,7 +151,7 @@ def run(master):
     InteractionBox(background, 1087, 517, 150, 131, "AcademicCenter")
     InteractionBox(background, 967, 535, 109, 101, "AdministrationBuilding")
     InteractionBox(background, 1081, 855, 154, 129, "AgribusinessCenter")
-    # InteractionBox(background,"ApliedArtsPavilion")
+    InteractionBox(background, 1417, 674, 100, 70, "ApliedArtsPavilion")
     InteractionBox(background, 1251, 346, 127, 149, "CenturyHall")
     InteractionBox(background, 1390, 414, 125, 84, "CitrusDiningPavilion")
     InteractionBox(background, 686, 735, 90, 119, "FacultiesManagementPoliceDepartment")
@@ -160,9 +160,9 @@ def run(master):
     InteractionBox(background, 832, 362, 128, 126, "Quads")
     InteractionBox(background, 1390, 749, 116, 71, "SantaCatalinaHall")
     InteractionBox(background, 1109, 742, 140, 64, "SantanHall")
-    InteractionBox(background, 1867, 4, 227,154, "SimulatorBuilding")
+    InteractionBox(background, 1867, 4, 227, 154, "SimulatorBuilding")
     InteractionBox(background, 1266, 519, 148, 112, "StudentUnion")
-    #InteractionBox(background,,, , "SunDevilFitnessComplexPolytech")
+    InteractionBox(background, 1413, 522, 114, 111, "SunDevilFitnessComplexPolytechnic")
     InteractionBox(background, 1259, 682, 111, 61, "SuttonHall")
     InteractionBox(background, 1259, 750, 113, 67, "WannerHall")
     InteractionBox(background, 1238, 849, 89, 95, "BellHall")
@@ -172,6 +172,5 @@ def run(master):
     InteractionBox(background, 1529, 740, 116, 110, "PaloBlancoHall")
     InteractionBox(background, 1253, 94, 127, 76, "PhantomResidenceHall")
     InteractionBox(background, 1059, 97, 118, 64, "TalonResidenceHall")
-
 
     log("Loaded map window", 3)

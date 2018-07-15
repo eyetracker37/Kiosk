@@ -12,7 +12,7 @@ master = window_elements.WindowManager()
 if config.use_tracker:
     welcome.run(master)  # Load welcome screen
 else:
-    #info.run(master, "CitrusDiningPavilion")  # Use this to enter directly to info screen
-    map.run(master)  # Runs entry point for GUI
+    info.run(master, "WannerHall")  # Use this to enter directly to info screen
+    #map.run(master)  # Runs entry point for GUI
 
 window_elements.run_master(master)

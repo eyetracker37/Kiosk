@@ -14,6 +14,8 @@
 <!-- Need the <img scr="name of picture"> for the picture to show. -->
 
 <h1>Basic Building Information</h1>
+<p>
+</p>
 <p>The building code is BELL
     <img src="BellHall1.bmp" alignment="right" scale="1">
 </p>
